@@ -188,13 +188,34 @@ Humanizes multiple texts at once.
 
 ## How It Works
 
-The application uses sophisticated pattern recognition to identify common AI-generated phrasing patterns and replaces them with more natural alternatives:
+AI detectors mainly measure signals like repetitive sentence openers ("Moreover…,
+Furthermore…"), uniform sentence length (no burstiness), and known AI-marker
+phrases ("delve", "tapestry", "it is important to note", …). The engine
+(`shared/humanizer.js`) attacks exactly those signals:
 
-- **Formal to Casual**: Converts formal academic language to conversational tone
-- **Complex to Simple**: Simplifies unnecessarily complex sentence structures
-- **AI Markers**: Removes common AI-generated phrases and markers
-- **Natural Flow**: Improves text flow and readability
-- **Contractions**: Adds natural contractions that AI often avoids
+- **Deterministic replacement**: every matching pattern is always applied
+  (no randomness), with **case preserved** ("Furthermore" → "Also") and
+  **word boundaries** respected ("implementation" → "use", never "Useation").
+- **AI-marker list**: curated detector-trigger phrases mapped to natural wording.
+- **Burstiness**: long uniform sentences are split at natural joints into mixed
+  short/long ones; semicolons become full stops; contractions added.
+- **Opener rotation**: consecutive sentences never start with the same opener.
+- **Intensity layers**: light = wording only; medium = + sentence splitting;
+  strong = + more aggressive splitting and one casual touch.
+
+> Honest note: no tool can guarantee a 0% AI score on every detector — detectors
+> change constantly. This engine removes the strongest, well-known signals, which
+> is what measurably lowers scores.
+
+### Editing the engine
+
+There is ONE source file: `shared/humanizer.js`. The three platform copies are
+generated — never edit them by hand:
+
+```bash
+node scripts/sync-humanizer.js
+# regenerates Frontend/src/humanizer.js, live-demo/humanizer.js, Backend/humanizer.js
+```
 
 ## Technology Stack
 

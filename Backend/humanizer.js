@@ -220,7 +220,7 @@ function escapeRegExp(s) {
 const EG_TOKEN = 'E\x1bG';
 const IE_TOKEN = 'I\x1bE';
 
-export class TextHumanizer {
+class TextHumanizer {
   preserveCase(match, replacement) {
     if (!match || !replacement) return replacement;
     if (match === match.toUpperCase()) return replacement.toUpperCase();
@@ -362,6 +362,6 @@ export class TextHumanizer {
   }
 }
 
-export const humanizer = new TextHumanizer();
+const humanizer = new TextHumanizer();
 
-export default humanizer;
+module.exports = { TextHumanizer, humanizer };
