@@ -201,11 +201,13 @@ phrases ("delve", "tapestry", "it is important to note", …). The engine
   short/long ones; semicolons become full stops; contractions added.
 - **Opener rotation**: consecutive sentences never start with the same opener.
 - **Intensity layers**: light = wording only; medium = + sentence splitting;
-  strong = + more aggressive splitting and one casual touch.
+  strong = + fragment-style splits ("Because it's faster."), a casual touch,
+  and a rhetorical closer ("…, right?"). **Use Strong before testing on a
+  detector — that mode is specifically built to break detector patterns.**
 
 > Honest note: no tool can guarantee a 0% AI score on every detector — detectors
-> change constantly. This engine removes the strongest, well-known signals, which
-> is what measurably lowers scores.
+> change constantly, and short formal texts give any humanizer little to work
+> with. Longer text + Strong mode is what measurably scores lowest.
 
 ### Editing the engine
 

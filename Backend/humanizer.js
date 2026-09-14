@@ -9,10 +9,12 @@
 // Never edit the copies by hand — edit this file, then run:
 //   node scripts/sync-humanizer.js
 
-// [phrase, replacement] — replacement is the BASE (lowercase) form.
-// Case of each match is preserved at runtime ("Furthermore" -> "Also").
-// Every entry is matched with word boundaries, longest phrases first,
-// and ALWAYS applied (no randomness), so output is deterministic.
+// [pattern, replacement, minLevel?] — pattern is either a plain phrase
+// (matched with word boundaries, longest first) or a RegExp (used as-is).
+// Replacement is the BASE (lowercase) form; case of each match is preserved
+// ("Furthermore" -> "Also"). minLevel gates bold voice changes:
+// 0 = all levels, 2 = strong only. Everything is ALWAYS applied within its
+// level (no randomness), so output is deterministic.
 const REPLACEMENTS = [
   // ---- Famous AI-detector trigger phrases (highest signal first) ----
   ['in today\'s fast-paced world', 'today'],
@@ -164,6 +166,155 @@ const REPLACEMENTS = [
   ['significant', 'major'],
   ['substantial', 'large'],
 
+  // ---- Human idioms & phrasing (detectors expect stiff AI wording here) ----
+  ['such as', 'like'],
+  ['as well as', 'and'],
+  ['in addition to', 'besides'],
+  ['with the help of', 'using'],
+  ['due to', 'because of'],
+  ['it goes without saying that', 'obviously,'],
+  ['there is no doubt that', 'clearly,'],
+  ['it is clear that', 'clearly,'],
+  ['as a matter of fact', 'actually'],
+  ['at this point in time', 'now'],
+  ['in the near future', 'soon'],
+  ['first and foremost', 'first'],
+  ['last but not least', 'finally'],
+  ['each and every', 'every'],
+  ['whether or not', 'whether'],
+  ['the fact that', 'that'],
+  ['in the process of', ''],
+  ['in light of', 'given'],
+  ['along the lines of', 'like'],
+  ['with respect to', 'about'],
+  ['in terms of', 'when it comes to'],
+  ['firstly', 'first'],
+  ['secondly', 'second'],
+  ['thirdly', 'third'],
+  ['lastly', 'finally'],
+  ['in most cases', 'usually'],
+  ['in many cases', 'often'],
+  ['a great deal of', 'a lot of'],
+  ['a significant amount of', 'a lot of'],
+  ['a large amount of', 'a lot of'],
+  ['a significant number of', 'a lot of'],
+  ['somewhat', 'kind of'],
+  ['relatively', 'pretty'],
+  ['fairly', 'pretty'],
+  ['extremely', 'really'],
+  ['very important', 'really important'],
+  ['very good', 'really good'],
+  ['very well', 'really well'],
+  ['very useful', 'really useful'],
+  ['very common', 'really common'],
+
+  // ---- Ability phrases ----
+  ['is able to', 'can'],
+  ['are able to', 'can'],
+  ['was able to', 'could'],
+  ['were able to', 'could'],
+  ['has the ability to', 'can'],
+  ['have the ability to', 'can'],
+  ['had the ability to', 'could'],
+
+  // ---- Stiff verbs -> everyday verbs ----
+  ['aims to', 'tries to'],
+  ['aim to', 'try to'],
+  ['aimed at', 'meant for'],
+  ['strives to', 'tries to'],
+  ['strive to', 'try to'],
+  ['seeks to', 'tries to'],
+  ['seek to', 'try to'],
+  ['requests', 'asks for'],
+  ['requested', 'asked for'],
+  ['request', 'ask for'],
+  ['inquires', 'asks'],
+  ['inquired', 'asked'],
+  ['inquire', 'ask'],
+  ['informs', 'tells'],
+  ['informed', 'told'],
+  ['inform', 'tell'],
+  ['contact us', 'reach out'],
+  ['exploring', 'looking at'],
+  ['explores', 'looks at'],
+  ['explored', 'looked at'],
+  ['explore', 'look at'],
+  ['diving into', 'getting into'],
+  ['dive into', 'get into'],
+  ['streamlining', 'simplifying'],
+  ['streamlines', 'simplifies'],
+  ['streamlined', 'simplified'],
+  ['streamline', 'simplify'],
+  ['optimizing', 'improving'],
+  ['optimizes', 'improves'],
+  ['optimized', 'improved'],
+  ['optimize', 'improve'],
+  ['maximizing', 'boosting'],
+  ['maximizes', 'boosts'],
+  ['maximized', 'boosted'],
+  ['maximize', 'boost'],
+  ['minimizing', 'reducing'],
+  ['minimizes', 'reduces'],
+  ['minimized', 'reduced'],
+  ['minimize', 'reduce'],
+  ['accelerating', 'speeding up'],
+  ['accelerates', 'speeds up'],
+  ['accelerated', 'sped up'],
+  ['accelerate', 'speed up'],
+  ['spearheading', 'leading'],
+  ['spearheads', 'leads'],
+  ['spearheaded', 'led'],
+  ['spearhead', 'lead'],
+  ['underscoring', 'showing'],
+  ['underscores', 'shows'],
+  ['underscored', 'showed'],
+  ['underscore', 'show'],
+  ['emphasizing', 'stressing'],
+  ['emphasizes', 'stresses'],
+  ['emphasized', 'stressed'],
+  ['emphasize', 'stress'],
+  ['revolutionizing', 'changing'],
+  ['revolutionizes', 'changes'],
+  ['revolutionized', 'changed'],
+  ['revolutionize', 'change'],
+  ['cutting-edge', 'latest'],
+  ['cutting edge', 'latest'],
+  ['state-of-the-art', 'latest'],
+  ['state of the art', 'latest'],
+  ['supercharge', 'boost'],
+  ['supercharges', 'boosts'],
+  ['supercharged', 'boosted'],
+  ['serves as', 'acts as'],
+  ['serve as', 'act as'],
+  ['plays a key role in', 'matters a lot for'],
+  ['play a key role in', 'matter a lot for'],
+  ['the latter', 'the second'],
+  ['respectively', 'in that order'],
+
+  // ---- Stiff nouns -> plain nouns ----
+  ['aspects', 'parts'],
+  ['aspect', 'part'],
+  ['elements', 'parts'],
+  ['element', 'part'],
+  ['components', 'parts'],
+  ['component', 'part'],
+
+  // ---- Second person: AI writes impersonally, humans address the reader ----
+  ['one can', 'you can'],
+  ['one should', 'you should'],
+  ['one must', 'you have to'],
+  ['it is possible to', 'you can'],
+  ['it is easy to', 'you can easily'],
+
+  // ---- Strong-only: bold voice changes (grammatically safe imperatives) ----
+  ['it is important to', 'be sure to', 2],
+  ['it is essential to', 'be sure to', 2],
+  ['it is crucial to', 'make sure to', 2],
+
+  // ---- Raw patterns (capture groups; used as-is) ----
+  [/(\d+)\s+percent\b/gi, '$1%'],
+  [/(\$?)(\d[\d,]*)\s+dollars\b/gi, (m, dol, num) => (dol || '$') + num],
+
   // ---- Contractions humans use, AI often avoids (always safe) ----
   ['cannot', "can't"],
   ['do not', "don't"],
@@ -183,6 +334,23 @@ const REPLACEMENTS = [
   ['it is', "it's"],
   ['that is', "that's"],
   ['there is', "there's"],
+  ['you will', "you'll"],
+  ['we will', "we'll"],
+  ['they will', "they'll"],
+  ['it will', "it'll"],
+  ['that will', "that'll"],
+  ['i will', "I'll"],
+  ['you have', "you've"],
+  ['we have', "we've"],
+  ['they have', "they've"],
+  ['i have', "I've"],
+  ['you are', "you're"],
+  ['we are', "we're"],
+  ['they are', "they're"],
+  ['you would', "you'd"],
+  ['we would', "we'd"],
+  ['they would', "they'd"],
+  ['i would', "I'd"],
 ];
 
 // Sentence openers that scream "AI" when repeated. Normalized to a natural
@@ -200,15 +368,17 @@ const OPENER_BASE = [
   ['nevertheless,', 'still,'],
   ['nonetheless,', 'still,'],
   ['in conclusion,', 'so,'],
+  ['lastly,', 'finally,'],
 ];
 const OPENER_ROTATION = {
   'also,': ['also,', 'plus,', 'and,'],
   'but,': ['but,', 'still,'],
   'so,': ['so,', 'then,'],
   'still,': ['still,', 'but,'],
+  'and,': ['and,', 'plus,', 'also,'],
 };
 
-const STRONG_FILLERS = ['honestly', 'basically', 'frankly'];
+const STRONG_FILLERS = ['honestly', 'frankly', 'basically', 'look'];
 
 function escapeRegExp(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -230,12 +400,19 @@ class TextHumanizer {
     return replacement;
   }
 
-  applyReplacements(text) {
-    // Longest phrases first so "a large number of" wins over "a number of".
-    const entries = [...REPLACEMENTS].sort((a, b) => b[0].length - a[0].length);
-    for (const [src, rep] of entries) {
-      const re = new RegExp('\\b' + escapeRegExp(src) + '\\b', 'gi');
-      text = text.replace(re, (m) => this.preserveCase(m, rep));
+  applyReplacements(text, level = 0) {
+    // Longest patterns first so "a large number of" wins over shorter ones.
+    const keyLen = (e) => (e[0] instanceof RegExp ? e[0].source.length : e[0].length);
+    const entries = [...REPLACEMENTS].sort((a, b) => keyLen(b) - keyLen(a));
+    for (const [src, rep, minLevel = 0] of entries) {
+      if (level < minLevel) continue;
+      if (src instanceof RegExp) {
+        // Raw pattern: fresh instance each call (avoids lastIndex state bugs).
+        text = text.replace(new RegExp(src.source, src.flags), rep);
+      } else {
+        const re = new RegExp('\\b' + escapeRegExp(src) + '\\b', 'gi');
+        text = text.replace(re, (m) => this.preserveCase(m, rep));
+      }
     }
     return text;
   }
@@ -251,12 +428,41 @@ class TextHumanizer {
 
   // Break sentences longer than maxWords at a natural joint. Splitting long,
   // uniform AI sentences into mixed short/long ones creates "burstiness" —
-  // the main thing detectors measure.
-  splitLongSentences(sentences, maxWords) {
-    const joints = [
-      /, and /i, /, but /i, /, or /i, /, so /i, /; /,
-      / which /i, / that /i, / because /i, / while /i, / whereas /i,
+  // the main thing detectors measure. Splits at because/while/when produce
+  // fragment-style sentences ("Because it's faster."), which humans write
+  // constantly and AI almost never does.
+  splitLongSentences(sentences, maxWords, mode) {
+    // A which/that split is only grammatical if a verb follows
+    // ("Which means X." works; "Which often Big..." does not).
+    const verbGuard = /^(is|was|are|were|will|would|can|could|has|have|had|means|meant|makes|made)\b/i;
+    const lightJoints = [
+      { re: /; / }, { re: /, and /i }, { re: /, but /i }, { re: /, or /i },
+      { re: /, so /i }, { re: / which /i, guard: true }, { re: / that /i, guard: true },
+      { re: / because /i }, { re: / while /i }, { re: / whereas /i },
     ];
+    const boldJoints = [
+      // Lookahead joints KEEP the conjunction so the new sentence reads
+      // "Because it's faster." / "While most tools..." — human fragments.
+      { re: / (?=because\b)/i }, { re: / (?=while\b)/i }, { re: / (?=whereas\b)/i },
+      { re: / (?=when\b)/i }, { re: / (?=if\b)/i }, { re: / (?=though\b)/i },
+      { re: / (?=although\b)/i },
+      { re: / (?=which\b)/i, guard: true }, { re: / (?=that\b)/i, guard: true },
+      { re: /; / },
+      { re: /, and /i }, { re: /, but /i }, { re: /, or /i }, { re: /, so /i },
+    ];
+    // Strong: bare-comma splits that KEEP the conjunction ("apples. And
+    // oranges.") — fragment rhythm, still grammatical thanks to FANBOYS.
+    const strongJoints = [
+      { re: / (?=because\b)/i }, { re: / (?=while\b)/i }, { re: / (?=whereas\b)/i },
+      { re: / (?=when\b)/i }, { re: / (?=if\b)/i }, { re: / (?=though\b)/i },
+      { re: / (?=although\b)/i },
+      { re: / (?=which\b)/i, guard: true }, { re: / (?=that\b)/i, guard: true },
+      { re: /; / },
+      { re: /, (?=and\b)/i }, { re: /, (?=or\b)/i }, { re: /, (?=but\b)/i },
+      { re: /, (?=so\b)/i }, { re: /, (?=yet\b)/i },
+      { re: /, and /i }, { re: /, but /i }, { re: /, or /i }, { re: /, so /i },
+    ];
+    const joints = mode === 'strong' ? strongJoints : mode === 'medium' ? boldJoints : lightJoints;
     const out = [];
     for (const s of sentences) {
       const words = s.split(/\s+/);
@@ -267,13 +473,19 @@ class TextHumanizer {
       let splitAt = -1;
       let jointLen = 0;
       for (const j of joints) {
-        const m = j.exec(s);
-        // Split near the middle so both halves read naturally.
-        if (m && m.index > s.length * 0.3 && m.index < s.length * 0.75) {
+        const rx = new RegExp(j.re.source, 'gi');
+        let m;
+        while ((m = rx.exec(s)) !== null) {
+          // Split off-center is fine (fragments are human); avoid stubs.
+          if (m.index < s.length * 0.15 || m.index > s.length * 0.85) continue;
+          const after = s.slice(m.index + m[0].length).trim();
+          // For which/that splits, the word AFTER the conjunction needs a verb.
+          if (j.guard && !verbGuard.test(after.replace(/^(which|that)\b\s*/i, ''))) continue;
           splitAt = m.index;
           jointLen = m[0].length;
           break;
         }
+        if (splitAt !== -1) break;
       }
       if (splitAt === -1) {
         out.push(s);
@@ -333,26 +545,42 @@ class TextHumanizer {
 
   humanize(text, intensity = 'medium') {
     if (!text || !text.trim()) return text;
+    const level = intensity === 'light' ? 0 : intensity === 'strong' ? 2 : 1;
 
     let result = text
       .replace(/e\.g\./gi, EG_TOKEN)
       .replace(/i\.e\./gi, IE_TOKEN);
-    result = this.applyReplacements(result);
+    result = this.applyReplacements(result, level);
     let sentences = this.splitSentences(result);
 
     const maxWords = intensity === 'light' ? 1000 : intensity === 'strong' ? 18 : 24;
     if (maxWords < 1000) {
-      sentences = this.splitLongSentences(sentences, maxWords);
+      sentences = this.splitLongSentences(sentences, maxWords, intensity);
     }
 
     sentences = this.normalizeOpeners(sentences);
 
     if (intensity === 'strong' && sentences.length > 1) {
-      // One deterministic casual touch on the 2nd sentence (never random).
+      // One deterministic casual touch (never random): first plain sentence
+      // after the opening one gets a conversational prefix.
       const filler = STRONG_FILLERS[sentences.length % STRONG_FILLERS.length];
-      if (!/^[A-Za-z]+,/.test(sentences[1])) {
-        sentences[1] = filler[0].toUpperCase() + filler.slice(1) + ', ' +
-          sentences[1].charAt(0).toLowerCase() + sentences[1].slice(1);
+      for (let i = 1; i < sentences.length; i++) {
+        // Skip openers ("Plus, ...") and conjunction-led fragments
+        // ("Because ..." + "Basically," would read redundantly).
+        if (!/^[A-Za-z]+,/.test(sentences[i]) &&
+            !/^(because|while|whereas|when|if|though|although|which|that|and|but|so|or|plus|also)\b/i.test(sentences[i])) {
+          sentences[i] = filler[0].toUpperCase() + filler.slice(1) + ', ' +
+            sentences[i].charAt(0).toLowerCase() + sentences[i].slice(1);
+          break;
+        }
+      }
+      // Rhetorical closer: "..., right?" — very human, very unpredictable
+      // for detectors. Only on a plain short closing statement.
+      if (sentences.length >= 3) {
+        const last = sentences[sentences.length - 1];
+        if (/\.$/.test(last) && last.split(/\s+/).length <= 20) {
+          sentences[sentences.length - 1] = last.replace(/\.$/, ', right?');
+        }
       }
     }
 
