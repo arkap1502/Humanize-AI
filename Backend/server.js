@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const { humanizer } = require('./humanizer');
+const { analyzeText } = require('./detector');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -53,8 +54,21 @@ app.post('/api/humanize', (req, res) => {
   }
 });
 
-app.post('/api/batch-humanize', (req, res) => {
+app.post('/api/detect', (req, res) => {
   try {
+    const { text } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ error: 'Text is required' });
+    }
+
+    res.json(analyzeText(text));
+  } catch (error) {
+    res.status(500).json({ error: 'Error analyzing text' });
+  }
+});
+
+app.post('/api/batch-humanize', (req, res) => {  try {
     const { texts, intensity = 'medium' } = req.body;
 
     if (!texts || !Array.isArray(texts)) {

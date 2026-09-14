@@ -1,30 +1,37 @@
-// Generates every platform copy of the humanizer from shared/humanizer.js.
-// Run after editing shared/humanizer.js:
+// Generates every platform copy of the shared modules.
+// Run after editing anything in shared/:
 //   node scripts/sync-humanizer.js
 const fs = require('fs');
 const path = require('path');
 
 const root = path.join(__dirname, '..');
-const src = fs.readFileSync(path.join(root, 'shared', 'humanizer.js'), 'utf8');
 
-const esmHeader = `// GENERATED — do not edit by hand. Edit shared/humanizer.js, then run:
+const esmHeader = `// GENERATED — do not edit by hand. Edit shared/, then run:
 //   node scripts/sync-humanizer.js
 
 `;
 
-// ES module copies (React + plain browser): identical logic.
-fs.writeFileSync(path.join(root, 'Frontend', 'src', 'humanizer.js'), esmHeader + src);
-fs.writeFileSync(path.join(root, 'live-demo', 'humanizer.js'), esmHeader + src);
+function syncFile(name, toCjs) {
+  const src = fs.readFileSync(path.join(root, 'shared', name), 'utf8');
+  const targets = name === 'humanizer.js'
+    ? ['Frontend/src/humanizer.js', 'live-demo/humanizer.js', 'Backend/humanizer.js']
+    : ['Frontend/src/detector.js', 'live-demo/detector.js', 'Backend/detector.js'];
+  for (const t of targets) {
+    let out = src;
+    if (t.startsWith('Backend/')) out = toCjs(out);
+    fs.writeFileSync(path.join(root, t), esmHeader + out);
+  }
+}
 
-// CommonJS copy (Express backend): convert the three export statements.
-let cjs = src
+// Humanizer copies.
+syncFile('humanizer.js', (src) => src
   .replace('export class TextHumanizer {', 'class TextHumanizer {')
   .replace('export const humanizer = new TextHumanizer();', 'const humanizer = new TextHumanizer();')
-  .replace('export default humanizer;', 'module.exports = { TextHumanizer, humanizer };');
-cjs = `// GENERATED — do not edit by hand. Edit shared/humanizer.js, then run:
-//   node scripts/sync-humanizer.js
+  .replace('export default humanizer;', 'module.exports = { TextHumanizer, humanizer };'));
 
-` + cjs;
-fs.writeFileSync(path.join(root, 'Backend', 'humanizer.js'), cjs);
+// Detector copies.
+syncFile('detector.js', (src) => src
+  .replace('export function analyzeText', 'function analyzeText')
+  .replace('export default analyzeText;', 'module.exports = { analyzeText };'));
 
-console.log('Synced: Frontend/src/humanizer.js, live-demo/humanizer.js, Backend/humanizer.js');
+console.log('Synced: humanizer.js + detector.js -> Frontend/src, live-demo, Backend');

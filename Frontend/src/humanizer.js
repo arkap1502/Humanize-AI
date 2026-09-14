@@ -1,4 +1,4 @@
-// GENERATED — do not edit by hand. Edit shared/humanizer.js, then run:
+// GENERATED — do not edit by hand. Edit shared/, then run:
 //   node scripts/sync-humanizer.js
 
 // Canonical Humanize AI engine — SINGLE SOURCE OF TRUTH.
@@ -291,6 +291,179 @@ const REPLACEMENTS = [
   ['the latter', 'the second'],
   ['respectively', 'in that order'],
 
+  // ---- More AI-favorite words -> plain words ----
+  ['vital', 'key'],
+  ['paramount', 'key'],
+  ['robust', 'strong'],
+  ['holistic', 'full'],
+  ['granular', 'detailed'],
+  ['actionable', 'useful'],
+  ['impactful', 'big'],
+  ['navigating', 'handling'],
+  ['navigates', 'handles'],
+  ['navigated', 'handled'],
+  ['navigate', 'handle'],
+  ['cultivating', 'building'],
+  ['cultivates', 'builds'],
+  ['cultivated', 'built'],
+  ['cultivate', 'build'],
+  ['poised to', 'ready to'],
+  ['myriad', 'many'],
+  ['a plethora of', 'a lot of'],
+  ['take a deep dive into', 'take a closer look at'],
+  ['deep dive into', 'closer look at'],
+  ['unpacking', 'breaking down'],
+  ['unpacks', 'breaks down'],
+  ['unpacked', 'broke down'],
+  ['unpack', 'break down'],
+  ['rapidly', 'quickly'],
+  ['groundbreaking', 'major'],
+  ['invaluable', 'really useful'],
+  ['meticulously', 'carefully'],
+  ['meticulous', 'careful'],
+  ['diligent', 'hardworking'],
+  ['cornerstone of', 'key part of'],
+  ['linchpin', 'key'],
+  ['catalyzing', 'sparking'],
+  ['catalyzes', 'sparks'],
+  ['catalyzed', 'sparked'],
+  ['catalyze', 'spark'],
+  ['galvanizing', 'motivating'],
+  ['galvanizes', 'motivates'],
+  ['galvanized', 'motivated'],
+  ['galvanize', 'motivate'],
+  ['amplifying', 'boosting'],
+  ['amplifies', 'boosts'],
+  ['amplified', 'boosted'],
+  ['amplify', 'boost'],
+  ['augmenting', 'expanding'],
+  ['augments', 'expands'],
+  ['augmented', 'expanded'],
+  ['augment', 'expand'],
+  ['bolstering', 'strengthening'],
+  ['bolsters', 'strengthens'],
+  ['bolstered', 'strengthened'],
+  ['bolster', 'strengthen'],
+  ['eschew', 'avoid'],
+  ['eschews', 'avoids'],
+  ['eschewed', 'avoided'],
+  ['obviate', 'remove'],
+  ['ameliorate', 'improve'],
+  ['ameliorates', 'improves'],
+  ['exacerbating', 'worsening'],
+  ['exacerbates', 'worsens'],
+  ['exacerbated', 'worsened'],
+  ['exacerbate', 'worsen'],
+  ['precipitating', 'triggering'],
+  ['precipitates', 'triggers'],
+  ['precipitated', 'triggered'],
+  ['precipitate', 'trigger'],
+  ['corroborating', 'confirming'],
+  ['corroborates', 'confirms'],
+  ['corroborated', 'confirmed'],
+  ['corroborate', 'confirm'],
+  ['substantiating', 'backing up'],
+  ['substantiates', 'backs up'],
+  ['substantiated', 'backed up'],
+  ['substantiate', 'back up'],
+  ['elucidating', 'explaining'],
+  ['elucidates', 'explains'],
+  ['elucidated', 'explained'],
+  ['elucidate', 'explain'],
+  ['explicate', 'explain'],
+  ['explicates', 'explains'],
+  ['delineating', 'outlining'],
+  ['delineates', 'outlines'],
+  ['delineated', 'outlined'],
+  ['delineate', 'outline'],
+  ['enumerating', 'listing'],
+  ['enumerates', 'lists'],
+  ['enumerated', 'listed'],
+  ['enumerate', 'list'],
+  ['positing', 'suggesting'],
+  ['posits', 'suggests'],
+  ['posited', 'suggested'],
+  ['posit', 'suggest'],
+  ['contending', 'arguing'],
+  ['contends', 'argues'],
+  ['contended', 'argued'],
+  ['contend', 'argue'],
+  ['quintessential', 'classic'],
+  ['dichotomy', 'divide'],
+  ['multifaceted', 'complex'],
+  ['interplay between', 'mix of'],
+  ['confluence', 'mix'],
+  ['amalgamation', 'mix'],
+  ['amalgam', 'mix'],
+  ['synthesis', 'mix'],
+  ['panacea', 'fix'],
+  ['watershed moment', 'turning point'],
+  ['inflection point', 'turning point'],
+  ['step change', 'big change'],
+  ['orders of magnitude', 'lot'],
+  ['order of magnitude', 'lot'],
+  ['exponentially', 'fast'],
+  ['proliferating', 'spreading'],
+  ['proliferates', 'spreads'],
+  ['proliferated', 'spread'],
+  ['proliferate', 'spread'],
+  ['permeating', 'spreading through'],
+  ['permeates', 'spreads through'],
+  ['permeated', 'spread through'],
+  ['permeate', 'spread through'],
+  ['pervading', 'filling'],
+  ['pervades', 'fills'],
+  ['pervaded', 'filled'],
+  ['pervade', 'fill'],
+  ['imbued with', 'full of'],
+  ['replete with', 'full of'],
+  ['fraught with', 'full of'],
+  ['beset by', 'hit by'],
+  ['beleaguered', 'struggling'],
+  ['intrepid', 'brave'],
+  ['stalwart', 'loyal'],
+  ['venerable', 'respected'],
+  ['esteemed', 'respected'],
+  ['preeminent', 'top'],
+  ['foremost', 'leading'],
+  ['renowned', 'famous'],
+  ['famed', 'famous'],
+  ['insatiable', 'endless'],
+  ['unrelenting', 'nonstop'],
+  ['inexorable', 'unstoppable'],
+  ['tireless', 'dedicated'],
+  ['staunch', 'strong'],
+  ['ardent', 'passionate'],
+  ['fervent', 'passionate'],
+  ['zealous', 'eager'],
+  ['indomitable', 'unbeatable'],
+  ['unassailable', 'solid'],
+  ['impeccably', 'perfectly'],
+  ['impeccable', 'perfect'],
+  ['effortless', 'easy'],
+  ['frictionless', 'smooth'],
+  ['turnkey', 'ready-made'],
+  ['best-of-breed', 'top'],
+  ['best of breed', 'top'],
+  ['world-class', 'top'],
+  ['next-generation', 'new'],
+  ['next generation', 'new'],
+  ['bleeding-edge', 'new'],
+  ['leading-edge', 'latest'],
+  ['trailblazing', 'new'],
+  ['innovative', 'creative'],
+  ['novel', 'fresh'],
+  ['transformative', 'powerful'],
+  ['game-changing', 'major'],
+  ['game changing', 'major'],
+  ['revolutionary', 'radical'],
+  ['ever-changing', 'changing'],
+  ['ever-growing', 'growing'],
+  ['ever-increasing', 'rising'],
+  ['ever-present', 'constant'],
+  ['in a fast-paced world', 'today'],
+  ['fast-paced world', 'world'],
+
   // ---- Stiff nouns -> plain nouns ----
   ['aspects', 'parts'],
   ['aspect', 'part'],
@@ -371,14 +544,14 @@ const OPENER_BASE = [
   ['lastly,', 'finally,'],
 ];
 const OPENER_ROTATION = {
-  'also,': ['also,', 'plus,', 'and,'],
-  'but,': ['but,', 'still,'],
-  'so,': ['so,', 'then,'],
-  'still,': ['still,', 'but,'],
-  'and,': ['and,', 'plus,', 'also,'],
+  // '' = drop the opener entirely ("Also, note that..." -> "Note that..."),
+  // the way a human editor varies rhythm — by omission, not decoration.
+  'also,': ['also,', 'and', ''],
+  'but,': ['but,', 'still,', ''],
+  'so,': ['so,', 'then,', ''],
+  'still,': ['still,', 'but,', ''],
+  'and,': ['and,', 'also,', ''],
 };
-
-const STRONG_FILLERS = ['honestly', 'frankly', 'basically', 'look'];
 
 function escapeRegExp(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -428,41 +601,26 @@ export class TextHumanizer {
 
   // Break sentences longer than maxWords at a natural joint. Splitting long,
   // uniform AI sentences into mixed short/long ones creates "burstiness" —
-  // the main thing detectors measure. Splits at because/while/when produce
-  // fragment-style sentences ("Because it's faster."), which humans write
-  // constantly and AI almost never does.
+  // the main thing detectors measure. Every split yields COMPLETE sentences
+  // (conjunctions are absorbed, never stranded into fragments).
   splitLongSentences(sentences, maxWords, mode) {
-    // A which/that split is only grammatical if a verb follows
-    // ("Which means X." works; "Which often Big..." does not).
-    const verbGuard = /^(is|was|are|were|will|would|can|could|has|have|had|means|meant|makes|made)\b/i;
+    // A which-split inserts "This" so the new sentence stands alone
+    // ("..., which tracks X." -> "This tracks X."). Bare 'that' is never
+    // split: it is often a complementizer ("said that..."), where a split
+    // would break grammar.
+    const verbGuard = /^(is|was|are|were|will|would|can|could|has|have|had|means|meant|makes|made|shows|showed|tracks|track)\b/i;
     const lightJoints = [
       { re: /; / }, { re: /, and /i }, { re: /, but /i }, { re: /, or /i },
-      { re: /, so /i }, { re: / which /i, guard: true }, { re: / that /i, guard: true },
+      { re: /, so /i }, { re: / which /i, guard: true, insert: 'This' },
       { re: / because /i }, { re: / while /i }, { re: / whereas /i },
     ];
     const boldJoints = [
-      // Lookahead joints KEEP the conjunction so the new sentence reads
-      // "Because it's faster." / "While most tools..." — human fragments.
-      { re: / (?=because\b)/i }, { re: / (?=while\b)/i }, { re: / (?=whereas\b)/i },
-      { re: / (?=when\b)/i }, { re: / (?=if\b)/i }, { re: / (?=though\b)/i },
-      { re: / (?=although\b)/i },
-      { re: / (?=which\b)/i, guard: true }, { re: / (?=that\b)/i, guard: true },
-      { re: /; / },
+      { re: / because /i }, { re: / while /i }, { re: / whereas /i },
+      { re: / when /i }, { re: / if /i }, { re: / though /i }, { re: / although /i },
+      { re: / which /i, guard: true, insert: 'This' }, { re: /; / },
       { re: /, and /i }, { re: /, but /i }, { re: /, or /i }, { re: /, so /i },
     ];
-    // Strong: bare-comma splits that KEEP the conjunction ("apples. And
-    // oranges.") — fragment rhythm, still grammatical thanks to FANBOYS.
-    const strongJoints = [
-      { re: / (?=because\b)/i }, { re: / (?=while\b)/i }, { re: / (?=whereas\b)/i },
-      { re: / (?=when\b)/i }, { re: / (?=if\b)/i }, { re: / (?=though\b)/i },
-      { re: / (?=although\b)/i },
-      { re: / (?=which\b)/i, guard: true }, { re: / (?=that\b)/i, guard: true },
-      { re: /; / },
-      { re: /, (?=and\b)/i }, { re: /, (?=or\b)/i }, { re: /, (?=but\b)/i },
-      { re: /, (?=so\b)/i }, { re: /, (?=yet\b)/i },
-      { re: /, and /i }, { re: /, but /i }, { re: /, or /i }, { re: /, so /i },
-    ];
-    const joints = mode === 'strong' ? strongJoints : mode === 'medium' ? boldJoints : lightJoints;
+    const joints = mode === 'light' ? lightJoints : boldJoints;
     const out = [];
     for (const s of sentences) {
       const words = s.split(/\s+/);
@@ -472,17 +630,19 @@ export class TextHumanizer {
       }
       let splitAt = -1;
       let jointLen = 0;
+      let jointInsert = null;
       for (const j of joints) {
         const rx = new RegExp(j.re.source, 'gi');
         let m;
         while ((m = rx.exec(s)) !== null) {
-          // Split off-center is fine (fragments are human); avoid stubs.
+          // Off-center splits are fine (short + long = burstiness); avoid stubs.
           if (m.index < s.length * 0.15 || m.index > s.length * 0.85) continue;
           const after = s.slice(m.index + m[0].length).trim();
-          // For which/that splits, the word AFTER the conjunction needs a verb.
-          if (j.guard && !verbGuard.test(after.replace(/^(which|that)\b\s*/i, ''))) continue;
+          // For which-splits, the clause needs a leading verb to stand alone.
+          if (j.guard && !verbGuard.test(after)) continue;
           splitAt = m.index;
           jointLen = m[0].length;
+          jointInsert = j.insert || null;
           break;
         }
         if (splitAt !== -1) break;
@@ -493,7 +653,11 @@ export class TextHumanizer {
       }
       const first = s.slice(0, splitAt).replace(/[,;]$/, '').trim() + '.';
       let second = s.slice(splitAt + jointLen).trim();
-      second = second.charAt(0).toUpperCase() + second.slice(1);
+      if (jointInsert) {
+        second = jointInsert + ' ' + second.charAt(0).toLowerCase() + second.slice(1);
+      } else {
+        second = second.charAt(0).toUpperCase() + second.slice(1);
+      }
       out.push(first, second);
     }
     return out;
@@ -509,20 +673,26 @@ export class TextHumanizer {
       }
       return s;
     });
-    // 2) rotate consecutive duplicates: "Also, ... Also, ..." never survives
+    // 2) rotate consecutive duplicates: "Also, ... Also, ..." never survives.
+    // A repeated opener becomes a synonym, then is dropped outright.
     const seen = {};
     mapped = mapped.map((s) => {
-      const m = s.match(/^([A-Za-z]+,)\s+/);
-      if (!m) return s;
+      const m = s.match(/^([A-Za-z]+,?)\s+/);
+      if (!m || !m[1].endsWith(',')) return s;
       const key = m[1].toLowerCase();
       const variants = OPENER_ROTATION[key];
       if (!variants) return s;
       seen[key] = (seen[key] || 0) + 1;
       const pick = variants[(seen[key] - 1) % variants.length];
       if (pick.toLowerCase() === key) return s;
+      const rest = s.slice(m[0].length);
+      if (pick === '') {
+        // Drop the opener; re-capitalize the new sentence start.
+        return rest.charAt(0).toUpperCase() + rest.slice(1);
+      }
       const cap = m[1][0] === m[1][0].toUpperCase();
       const word = cap ? pick[0].toUpperCase() + pick.slice(1) : pick;
-      return word + ' ' + s.slice(m[0].length);
+      return word + ' ' + rest;
     });
     return mapped;
   }
@@ -559,30 +729,6 @@ export class TextHumanizer {
     }
 
     sentences = this.normalizeOpeners(sentences);
-
-    if (intensity === 'strong' && sentences.length > 1) {
-      // One deterministic casual touch (never random): first plain sentence
-      // after the opening one gets a conversational prefix.
-      const filler = STRONG_FILLERS[sentences.length % STRONG_FILLERS.length];
-      for (let i = 1; i < sentences.length; i++) {
-        // Skip openers ("Plus, ...") and conjunction-led fragments
-        // ("Because ..." + "Basically," would read redundantly).
-        if (!/^[A-Za-z]+,/.test(sentences[i]) &&
-            !/^(because|while|whereas|when|if|though|although|which|that|and|but|so|or|plus|also)\b/i.test(sentences[i])) {
-          sentences[i] = filler[0].toUpperCase() + filler.slice(1) + ', ' +
-            sentences[i].charAt(0).toLowerCase() + sentences[i].slice(1);
-          break;
-        }
-      }
-      // Rhetorical closer: "..., right?" — very human, very unpredictable
-      // for detectors. Only on a plain short closing statement.
-      if (sentences.length >= 3) {
-        const last = sentences[sentences.length - 1];
-        if (/\.$/.test(last) && last.split(/\s+/).length <= 20) {
-          sentences[sentences.length - 1] = last.replace(/\.$/, ', right?');
-        }
-      }
-    }
 
     result = this.normalizePunctuation(sentences.join(' '));
     result = result.split(EG_TOKEN).join('e.g.').split(IE_TOKEN).join('i.e.');

@@ -136,7 +136,44 @@ The frontend will run on `http://localhost:3000`
 5. Click "Humanize Text" to process
 6. Copy the result using the "Copy to Clipboard" button
 
+## AI Likelihood Indicator
+
+Both the React app and the `live-demo/` page show a live **AI likelihood %** under
+your input (updates as you type) and under the result (with the point drop vs
+input, e.g. "−38 pts vs input"). Click "Why this score?" to see the exact
+signals found (marker phrases, uniform sentence length, repeated openers,
+missing contractions, impersonal voice, …).
+
+The score comes from `shared/detector.js` — a heuristic estimator that measures
+the same public signals real detectors use. It is **not** ZeroGPT itself, so
+external detectors will report different numbers; use ours for fast
+before/after comparison while humanizing. Texts under 15 words are marked
+"too short to score" (no detector is reliable on snippets).
+
 ## API Endpoints
+
+### POST /api/detect
+Scores a text with the built-in AI-likelihood estimator.
+
+**Request:**
+```json
+{
+  "text": "Your text here"
+}
+```
+
+**Response:**
+```json
+{
+  "score": 66,
+  "reliable": true,
+  "label": "Likely AI",
+  "signals": [
+    { "label": "AI marker phrases", "detail": "8 found (moreover, leverage, …)", "points": 36 }
+  ],
+  "stats": { "words": 49, "sentences": 4, "avgWords": 12.2, "markers": ["moreover"] }
+}
+```
 
 ### POST /api/humanize
 Humanizes a single text input.
@@ -198,16 +235,21 @@ phrases ("delve", "tapestry", "it is important to note", …). The engine
   **word boundaries** respected ("implementation" → "use", never "Useation").
 - **AI-marker list**: curated detector-trigger phrases mapped to natural wording.
 - **Burstiness**: long uniform sentences are split at natural joints into mixed
-  short/long ones; semicolons become full stops; contractions added.
-- **Opener rotation**: consecutive sentences never start with the same opener.
+  short/long ones — every split yields complete sentences, never fragments.
+- **Opener rotation**: consecutive sentences never start with the same opener —
+  repeats become a synonym, then are dropped outright ("Also, … Also, …" →
+  "Also, … And … …").
 - **Intensity layers**: light = wording only; medium = + sentence splitting;
-  strong = + fragment-style splits ("Because it's faster."), a casual touch,
-  and a rhetorical closer ("…, right?"). **Use Strong before testing on a
-  detector — that mode is specifically built to break detector patterns.**
+  strong = + tighter splitting and bolder voice changes (imperatives,
+  "such as" → "like", hedges like "kind of"). **Use Strong before testing
+  on a detector.**
 
 > Honest note: no tool can guarantee a 0% AI score on every detector — detectors
 > change constantly, and short formal texts give any humanizer little to work
-> with. Longer text + Strong mode is what measurably scores lowest.
+> with. Longer text + Strong mode is what measurably scores lowest. Also note:
+> detectors learn the tics of humanizer tools, so this engine deliberately
+> avoids gimmicks (no tacked-on "right?", no "Honestly," prefixes, no fake
+> fragments) — only genuine restructuring and vocabulary.
 
 ### Editing the engine
 

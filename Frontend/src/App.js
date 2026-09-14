@@ -1,11 +1,71 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { humanizer } from './humanizer';
+import { analyzeText } from './detector';
 import './App.css';
 
 // Set REACT_APP_API_URL to your deployed backend URL (e.g. https://humanize-ai.onrender.com)
 // to use the server. When unset (e.g. GitHub Pages), the app humanizes locally in-browser.
 const API_URL = process.env.REACT_APP_API_URL || '';
+
+function ScoreCard({ title, analysis, delta }) {
+  const [showSignals, setShowSignals] = useState(false);
+
+  if (!analysis) return null;
+
+  if (!analysis.reliable) {
+    return (
+      <div className="score-card">
+        <div className="score-top">
+          <span className="score-title">{title}</span>
+          <span className="score-note">Too short to score — paste 15+ words</span>
+        </div>
+      </div>
+    );
+  }
+
+  const level = analysis.score >= 60 ? 'high' : analysis.score >= 35 ? 'mid' : 'low';
+
+  return (
+    <div className="score-card">
+      <div className="score-top">
+        <span className="score-title">{title}</span>
+        <span className={`score-num ${level}`}>{analysis.score}%</span>
+        <span className="score-label">{analysis.label}</span>
+        {typeof delta === 'number' && delta !== 0 && (
+          <span className={`score-delta ${delta > 0 ? 'good' : 'bad'}`}>
+            {delta > 0 ? `−${delta}` : `+${-delta}`} pts vs input
+          </span>
+        )}
+      </div>
+      <div className="score-bar">
+        <div className={`score-fill ${level}`} style={{ width: `${analysis.score}%` }} />
+      </div>
+      {analysis.signals.length > 0 && (
+        <button
+          type="button"
+          className="score-toggle"
+          onClick={() => setShowSignals(!showSignals)}
+        >
+          {showSignals ? 'Hide details ▲' : 'Why this score? ▼'}
+        </button>
+      )}
+      {showSignals && (
+        <ul className="signals-list">
+          {analysis.signals.map((s, i) => (
+            <li key={i}>
+              <span className={`sig-pts ${s.points > 0 ? 'pos' : 'neg'}`}>
+                {s.points > 0 ? `+${s.points}` : s.points}
+              </span>
+              {' '}{s.label} <span className="score-note">({s.detail})</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className="score-foot">Heuristic estimate from writing signals — external AI detectors may score differently.</div>
+    </div>
+  );
+}
 
 function App() {
   const [inputText, setInputText] = useState('');
@@ -72,6 +132,15 @@ function App() {
     alert('Text copied to clipboard!');
   };
 
+  // AI-likelihood scores are computed locally & instantly (same estimator
+  // the backend uses), so they work offline and on GitHub Pages.
+  const inputScore = inputText.trim() ? analyzeText(inputText) : null;
+  const outputScore = outputText ? analyzeText(outputText) : null;
+  const scoreDelta =
+    inputScore && inputScore.reliable && outputScore && outputScore.reliable
+      ? inputScore.score - outputScore.score
+      : null;
+
   return (
     <div className="App">
       <div className="container">
@@ -90,6 +159,10 @@ function App() {
               placeholder="Paste your AI-generated text here..."
             />
           </div>
+
+          {inputScore && (
+            <ScoreCard title="Input AI likelihood" analysis={inputScore} />
+          )}
 
           <div className="controls">
             <div className="intensity-selector">
@@ -153,6 +226,7 @@ function App() {
               >
                 Copy to Clipboard
               </button>
+              <ScoreCard title="Output AI likelihood" analysis={outputScore} delta={scoreDelta} />
             </div>
           )}
         </div>
