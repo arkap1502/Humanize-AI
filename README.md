@@ -30,7 +30,61 @@ Humanize Ai/
 └── README.md
 ```
 
-## Setup Instructions
+## Quick Preview in VS Code (Live Server, no build needed)
+
+VS Code's Live Server extension only serves **static files** — it cannot run the
+React dev server or the Express backend. So this repo includes a zero-build copy
+of the app in `live-demo/` (same UI, same styles, same humanizer engine):
+
+```
+live-demo/
+├── index.html     # same UI as the React app
+├── styles.css     # same styles (copied from Frontend/src/*.css)
+├── app.js         # same logic as App.js, in plain JavaScript
+└── humanizer.js   # same engine (works fully offline in the browser)
+```
+
+1. Install the **Live Server** extension in VS Code (by Ritwick Dey).
+2. Right-click `live-demo/index.html` → **Open with Live Server**.
+3. The app opens at `http://127.0.0.1:5500/live-demo/index.html` and works
+   immediately — no `npm install`, no build step.
+4. Tip: if you also run the backend (`Backend` → `npm start`), the page will
+   automatically use the API instead of the built-in engine.
+
+> Do NOT just double-click `index.html` — browsers block ES modules on
+> `file://` URLs, so you must open it through Live Server (http).
+
+## Deployment (GitHub Pages)
+
+The frontend is fully static-ready: if no backend URL is configured, it humanizes
+text locally in the browser (`Frontend/src/humanizer.js`, a client-side port of the
+backend logic). A GitHub Actions workflow (`.github/workflows/deploy.yml`) builds
+`Frontend/` and deploys it to GitHub Pages on every push to `main`.
+
+One-time setup:
+1. Push this repo to GitHub (see note below about `node_modules`).
+2. Go to **Settings → Pages** and set **Source** to **GitHub Actions**.
+3. Push to `main` — the site will be live at
+   `https://<your-username>.github.io/Humanize-Ai/`.
+
+> **Important:** `Backend/node_modules` was previously committed by accident and has
+> been removed from git tracking. Commit the deletion plus the new root `.gitignore`
+> so future pushes stay small:
+> ```bash
+> git add -A
+> git commit -m "Fix GitHub deployment: static fallback, Pages workflow, ignore node_modules"
+> git push origin main
+> ```
+
+### Optional: use the live backend instead of local humanization
+1. Deploy `Backend/` to Render/Railway/Fly (start command: `npm start`, it respects `PORT`).
+2. In the GitHub repo, set `REACT_APP_API_URL` in the `deploy.yml` build env
+   (or a `BACKEND_URL` secret) to your backend URL, e.g.
+   `https://humanize-ai.onrender.com`.
+3. Local development still uses `http://localhost:5000` — create
+   `Frontend/.env` from `.env.example` if you want to override it.
+
+## Setup Instructions (local)
 
 ### Backend Setup
 

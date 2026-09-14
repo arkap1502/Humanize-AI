@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { humanizer } from './humanizer';
 import './App.css';
+
+// Set REACT_APP_API_URL to your deployed backend URL (e.g. https://humanize-ai.onrender.com)
+// to use the server. When unset (e.g. GitHub Pages), the app humanizes locally in-browser.
+const API_URL = process.env.REACT_APP_API_URL || '';
 
 function App() {
   const [inputText, setInputText] = useState('');
@@ -21,18 +26,34 @@ function App() {
     setOutputText('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/humanize', {
-        text: inputText,
-        intensity: intensity
-      });
+      let humanized;
 
-      setOutputText(response.data.humanized);
+      if (API_URL) {
+        try {
+          const response = await axios.post(`${API_URL}/api/humanize`, {
+            text: inputText,
+            intensity: intensity
+          });
+          humanized = response.data.humanized;
+        } catch (apiErr) {
+          // Backend unreachable — fall back to in-browser humanization
+          console.warn('API unavailable, using local humanizer:', apiErr);
+          humanized = humanizer.humanize(inputText, intensity);
+        }
+      } else {
+        // No backend configured (GitHub Pages) — humanize locally
+        // Small delay so the loading spinner is visible
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        humanized = humanizer.humanize(inputText, intensity);
+      }
+
+      setOutputText(humanized);
       setStats({
         originalWords: inputText.split(/\s+/).filter(word => word.length > 0).length,
-        humanizedWords: response.data.humanized.split(/\s+/).filter(word => word.length > 0).length
+        humanizedWords: humanized.split(/\s+/).filter(word => word.length > 0).length
       });
     } catch (err) {
-      setError('Failed to humanize text. Please make sure the backend server is running.');
+      setError('Failed to humanize text. Please try again.');
       console.error('Error:', err);
     } finally {
       setLoading(false);

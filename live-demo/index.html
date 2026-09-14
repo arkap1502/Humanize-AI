@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="AI to Human Text Converter" />
+  <title>Humanize AI</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <!--
+    Static Live Server preview of the Humanize AI app (same UI as Frontend/src/App.js).
+    HOW TO VIEW: right-click this file in VS Code -> "Open with Live Server".
+    NOTE: open it via Live Server (http://127.0.0.1:5500), NOT by double-clicking
+    the file, because the script below is an ES module and browsers block
+    modules on file:// URLs.
+    No build step needed. Works fully offline in the browser. If you also run
+    the backend (Backend -> npm start), the page will use the API automatically.
+  -->
+  <div class="App">
+    <div class="container">
+      <div class="header">
+        <h1>Humanize AI</h1>
+        <p>Transform AI-generated text into natural, human-like writing</p>
+      </div>
+
+      <div class="content">
+        <div class="textarea-container">
+          <label for="input-text">Enter AI-generated text:</label>
+          <textarea id="input-text" placeholder="Paste your AI-generated text here..."></textarea>
+        </div>
+
+        <div class="controls">
+          <div class="intensity-selector">
+            <label for="intensity">Humanization Intensity:</label>
+            <select id="intensity">
+              <option value="light">Light - Subtle changes</option>
+              <option value="medium" selected>Medium - Balanced approach</option>
+              <option value="strong">Strong - More casual</option>
+            </select>
+          </div>
+
+          <div class="button-container">
+            <button class="button primary-button" id="humanize-btn">Humanize Text</button>
+            <button class="button secondary-button" id="clear-btn">Clear</button>
+          </div>
+        </div>
+
+        <div class="error" id="error" style="display: none;"></div>
+
+        <div class="result-container" id="result-container" style="display: none;">
+          <h3>Humanized Result:</h3>
+          <div class="result-text" id="result-text"></div>
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-value" id="original-words">0</div>
+              <div class="stat-label">Original Words</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" id="humanized-words">0</div>
+              <div class="stat-label">Humanized Words</div>
+            </div>
+          </div>
+          <button class="button copy-button" id="copy-btn" style="margin-top: 20px;">Copy to Clipboard</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

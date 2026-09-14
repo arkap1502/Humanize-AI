@@ -1,6 +1,7 @@
 {
   "name": "humanize-ai-frontend",
   "version": "1.0.0",
+  "homepage": ".",
   "description": "Frontend for AI text humanization",
   "scripts": {
     "start": "react-scripts start",
