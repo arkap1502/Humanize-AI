@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#060809" />
   <meta name="description" content="AI to Human Text Converter" />
   <title>Humanize AI</title>
   <link rel="stylesheet" href="./styles.css" />
@@ -17,57 +18,136 @@
     No build step needed. Works fully offline in the browser. If you also run
     the backend (Backend -> npm start), the page will use the API automatically.
   -->
-  <div class="App">
-    <div class="container">
-      <div class="header">
-        <h1>Humanize AI</h1>
-        <p>Transform AI-generated text into natural, human-like writing</p>
-      </div>
-
-      <div class="content">
-        <div class="textarea-container">
-          <label for="input-text">Enter AI-generated text:</label>
-          <textarea id="input-text" placeholder="Paste your AI-generated text here..."></textarea>
-        </div>
-
-        <div id="input-score"></div>
-
-        <div class="controls">
-          <div class="intensity-selector">
-            <label for="intensity">Humanization Intensity:</label>
-            <select id="intensity">
-              <option value="light">Light - Subtle changes</option>
-              <option value="medium" selected>Medium - Balanced approach</option>
-              <option value="strong">Strong - More casual</option>
-            </select>
-          </div>
-
-          <div class="button-container">
-            <button class="button primary-button" id="humanize-btn">Humanize Text</button>
-            <button class="button secondary-button" id="clear-btn">Clear</button>
-          </div>
-        </div>
-
-        <div class="error" id="error" style="display: none;"></div>
-
-        <div class="result-container" id="result-container" style="display: none;">
-          <h3>Humanized Result:</h3>
-          <div class="result-text" id="result-text"></div>
-          <div class="stats">
-            <div class="stat">
-              <div class="stat-value" id="original-words">0</div>
-              <div class="stat-label">Original Words</div>
-            </div>
-            <div class="stat">
-              <div class="stat-value" id="humanized-words">0</div>
-              <div class="stat-label">Humanized Words</div>
-            </div>
-          </div>
-          <button class="button copy-button" id="copy-btn" style="margin-top: 20px;">Copy to Clipboard</button>
-          <div id="output-score"></div>
-        </div>
-      </div>
+  <div class="App" id="top">
+    <div class="bg" aria-hidden="true">
+      <div class="orb orb-a"></div>
+      <div class="orb orb-b"></div>
+      <div class="orb orb-c"></div>
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+      <div class="ring ring-3"></div>
+      <div class="grain"></div>
+      <div class="vignette"></div>
     </div>
+
+    <nav class="nav">
+      <a class="brand" href="#top">
+        <span class="logo-orb"></span>
+        Humanize AI
+        <span class="brand-badge">v2</span>
+      </a>
+      <div class="nav-links">
+        <a href="#tool">Humanizer</a>
+        <a href="#how">How it works</a>
+        <a href="https://github.com/arkap1502/Humanize-Ai" target="_blank" rel="noreferrer">GitHub</a>
+      </div>
+      <a class="nav-cta" href="#tool">
+        <span class="dot"></span>
+        Try it now
+      </a>
+    </nav>
+
+    <header class="hero">
+      <span class="pill">AI Text Humanizer</span>
+      <h1>
+        Make AI text <span class="grad">sound human</span>
+      </h1>
+      <p class="sub">
+        Paste robotic AI-generated copy, pick an intensity, and get natural
+        writing back — with a live AI-likelihood score to prove it.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#tool">Humanize my text →</a>
+        <a class="btn btn-ghost" href="#how">How it works</a>
+      </div>
+      <div class="proof">
+        <div class="avatars" aria-hidden="true">
+          <span>A</span><span>S</span><span>R</span><span>M</span>
+        </div>
+        <div class="proof-text">
+          <span class="stars">★★★★★</span><br />
+          500+ texts humanized
+        </div>
+      </div>
+    </header>
+
+    <main class="container" id="tool">
+      <div class="tool-card">
+        <div class="tool-head">
+          <h2>Humanize your text</h2>
+          <p>Paste AI-generated text below — everything runs instantly, right here.</p>
+        </div>
+        <div class="content">
+          <div class="textarea-container">
+            <label for="input-text">Enter AI-generated text:</label>
+            <textarea id="input-text" placeholder="Paste your AI-generated text here..."></textarea>
+          </div>
+
+          <div id="input-score"></div>
+
+          <div class="controls">
+            <div class="intensity-selector">
+              <label for="intensity">Humanization Intensity:</label>
+              <select id="intensity">
+                <option value="light">Light - Subtle changes</option>
+                <option value="medium" selected>Medium - Balanced approach</option>
+                <option value="strong">Strong - More casual</option>
+              </select>
+            </div>
+
+            <div class="button-container">
+              <button class="button primary-button" id="humanize-btn">Humanize Text</button>
+              <button class="button secondary-button" id="clear-btn">Clear</button>
+            </div>
+          </div>
+
+          <div class="error" id="error" style="display: none;"></div>
+
+          <div class="result-container" id="result-container" style="display: none;">
+            <h3>Humanized Result:</h3>
+            <div class="result-text" id="result-text"></div>
+            <div class="stats">
+              <div class="stat">
+                <div class="stat-value" id="original-words">0</div>
+                <div class="stat-label">Original Words</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value" id="humanized-words">0</div>
+                <div class="stat-label">Humanized Words</div>
+              </div>
+            </div>
+            <button class="button copy-button" id="copy-btn" style="margin-top: 20px;">Copy to Clipboard</button>
+            <div id="output-score"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <section class="features" id="how">
+      <h2>How it works</h2>
+      <p>Three steps. No sign-up, no server needed — it all runs in your browser.</p>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <span class="feature-num">1</span>
+          <h3>Paste &amp; detect</h3>
+          <p>Your text is scored live for AI signals — marker phrases, uniform sentences, repeated openers.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-num">2</span>
+          <h3>Humanize</h3>
+          <p>Pick Light, Medium or Strong. Stiff phrasing is rewritten, long sentences split, rhythm varied.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-num">3</span>
+          <h3>Verify the score</h3>
+          <p>Watch the AI-likelihood percentage drop and inspect exactly which signals were removed.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Humanize AI — runs 100% in your browser.
+    </footer>
   </div>
 
   <script type="module" src="./app.js"></script>

@@ -142,14 +142,66 @@ function App() {
       : null;
 
   return (
-    <div className="App">
-      <div className="container">
-        <div className="header">
-          <h1>Humanize AI</h1>
-          <p>Transform AI-generated text into natural, human-like writing</p>
-        </div>
+    <div className="App" id="top">
+      <div className="bg" aria-hidden="true">
+        <div className="orb orb-a" />
+        <div className="orb orb-b" />
+        <div className="orb orb-c" />
+        <div className="ring ring-1" />
+        <div className="ring ring-2" />
+        <div className="ring ring-3" />
+        <div className="grain" />
+        <div className="vignette" />
+      </div>
 
-        <div className="content">
+      <nav className="nav">
+        <a className="brand" href="#top">
+          <span className="logo-orb" />
+          Humanize AI
+          <span className="brand-badge">v2</span>
+        </a>
+        <div className="nav-links">
+          <a href="#tool">Humanizer</a>
+          <a href="#how">How it works</a>
+          <a href="https://github.com/arkap1502/Humanize-Ai" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+        <a className="nav-cta" href="#tool">
+          <span className="dot" />
+          Try it now
+        </a>
+      </nav>
+
+      <header className="hero">
+        <span className="pill">AI Text Humanizer</span>
+        <h1>
+          Make AI text <span className="grad">sound human</span>
+        </h1>
+        <p className="sub">
+          Paste robotic AI-generated copy, pick an intensity, and get natural
+          writing back — with a live AI-likelihood score to prove it.
+        </p>
+        <div className="hero-cta">
+          <a className="btn btn-primary" href="#tool">Humanize my text →</a>
+          <a className="btn btn-ghost" href="#how">How it works</a>
+        </div>
+        <div className="proof">
+          <div className="avatars" aria-hidden="true">
+            <span>A</span><span>S</span><span>R</span><span>M</span>
+          </div>
+          <div className="proof-text">
+            <span className="stars">★★★★★</span><br />
+            500+ texts humanized
+          </div>
+        </div>
+      </header>
+
+      <main className="container" id="tool">
+        <div className="tool-card">
+          <div className="tool-head">
+            <h2>Humanize your text</h2>
+            <p>Paste AI-generated text below — everything runs instantly, right here.</p>
+          </div>
+          <div className="content">
           <div className="textarea-container">
             <label htmlFor="input-text">Enter AI-generated text:</label>
             <textarea
@@ -229,8 +281,35 @@ function App() {
               <ScoreCard title="Output AI likelihood" analysis={outputScore} delta={scoreDelta} />
             </div>
           )}
+          </div>
         </div>
-      </div>
+      </main>
+
+      <section className="features" id="how">
+        <h2>How it works</h2>
+        <p>Three steps. No sign-up, no server needed — it all runs in your browser.</p>
+        <div className="feature-grid">
+          <div className="feature-card">
+            <span className="feature-num">1</span>
+            <h3>Paste &amp; detect</h3>
+            <p>Your text is scored live for AI signals — marker phrases, uniform sentences, repeated openers.</p>
+          </div>
+          <div className="feature-card">
+            <span className="feature-num">2</span>
+            <h3>Humanize</h3>
+            <p>Pick Light, Medium or Strong. Stiff phrasing is rewritten, long sentences split, rhythm varied.</p>
+          </div>
+          <div className="feature-card">
+            <span className="feature-num">3</span>
+            <h3>Verify the score</h3>
+            <p>Watch the AI-likelihood percentage drop and inspect exactly which signals were removed.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer className="footer">
+        Humanize AI — runs 100% in your browser. Built with React.
+      </footer>
     </div>
   );
 }
