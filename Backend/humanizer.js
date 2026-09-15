@@ -464,6 +464,118 @@ const REPLACEMENTS = [
   ['in a fast-paced world', 'today'],
   ['fast-paced world', 'world'],
 
+  // ---- Stiff verbs -> everyday verbs, wave 2 ----
+  ['beginning', 'starting'],
+  ['begins', 'starts'],
+  ['began', 'started'],
+  ['begin', 'start'],
+  ['concluding', 'finishing'],
+  ['concludes', 'finishes'],
+  ['concluded', 'finished'],
+  ['conclude', 'finish'],
+  ['terminating', 'ending'],
+  ['terminates', 'ends'],
+  ['terminated', 'ended'],
+  ['terminate', 'end'],
+  ['enjoying', 'liking'],
+  ['enjoys', 'likes'],
+  ['enjoyed', 'liked'],
+  ['enjoy', 'like'],
+  ['resolving', 'fixing'],
+  ['resolves', 'fixes'],
+  ['resolved', 'fixed'],
+  ['resolve', 'fix'],
+  ['solving', 'fixing'],
+  ['solves', 'fixes'],
+  ['solved', 'fixed'],
+  ['solve', 'fix'],
+  ['verifies', 'checks'],
+  ['verified', 'checked'],
+  ['verify', 'check'],
+  ['selecting', 'picking'],
+  ['selects', 'picks'],
+  ['selected', 'picked'],
+  ['select', 'pick'],
+  ['eliminating', 'removing'],
+  ['eliminates', 'removes'],
+  ['eliminated', 'removed'],
+  ['eliminate', 'remove'],
+  ['eradicating', 'wiping out'],
+  ['eradicates', 'wipes out'],
+  ['eradicated', 'wiped out'],
+  ['eradicate', 'wipe out'],
+  ['reducing', 'cutting'],
+  ['reduces', 'cuts'],
+  ['reduced', 'cut'],
+  ['reduce', 'cut'],
+  ['maintaining', 'keeping'],
+  ['maintains', 'keeps'],
+  ['maintained', 'kept'],
+  ['maintain', 'keep'],
+  ['examining', 'looking at'],
+  ['examines', 'looks at'],
+  ['examined', 'looked at'],
+  ['examine', 'look at'],
+  ['discussing', 'talking about'],
+  ['discusses', 'talks about'],
+  ['discussed', 'talked about'],
+  ['discuss', 'talk about'],
+  ['states that', 'says that'],
+  ['stated that', 'said that'],
+  ['state that', 'say that'],
+  ['resembling', 'looking like'],
+  ['resembles', 'looks like'],
+  ['resembled', 'looked like'],
+  ['resemble', 'look like'],
+  ['appears to', 'seems to'],
+  ['appear to', 'seem to'],
+  ['appeared to', 'seemed to'],
+
+  // ---- Stiff adjectives -> plain adjectives ----
+  ['minor', 'small'],
+  ['antiquated', 'old'],
+  ['archaic', 'old'],
+  ['additional', 'more'],
+  ['complimentary shipping', 'free shipping'],
+  ['complimentary trial', 'free trial'],
+  ['complimentary access', 'free access'],
+  ['fraudulent', 'fake'],
+  ['genuine', 'real'],
+  ['authentic', 'real'],
+  ['entire', 'whole'],
+  ['optimal', 'best'],
+  ['ideal', 'perfect'],
+  ['delighted', 'happy'],
+  ['thrilled', 'excited'],
+  ['displeased', 'unhappy'],
+  ['dissatisfied', 'unhappy'],
+  ['exhausted', 'tired'],
+  ['fatigued', 'tired'],
+  ['intelligent', 'smart'],
+  ['make certain', 'make sure'],
+  ['be certain', 'be sure'],
+
+  // ---- Stiff adverbs/time -> plain ----
+  ['frequently', 'often'],
+  ['occasionally', 'sometimes'],
+  ['invariably', 'always'],
+  ['approximately', 'about'],
+  ['currently', 'now'],
+  ['presently', 'now'],
+  ['at present', 'now'],
+  ['quickly', 'fast'],
+  ['merely', 'just'],
+
+  // ---- More contractions AI text leaves expanded ----
+  ['what is', "what's"],
+  ['who is', "who's"],
+  ['here is', "here's"],
+
+  // ---- Strong-only casualization ----
+  ['a lot of', 'tons of', 2],
+  [/(?<!would\s)\brather\b/gi, 'pretty', 2],
+  [/\bquite\b(?!\s+a\s+few)(?!\s+the\b)/gi, 'pretty', 2],
+
   // ---- Stiff nouns -> plain nouns ----
   ['aspects', 'parts'],
   ['aspect', 'part'],
@@ -713,6 +825,45 @@ class TextHumanizer {
     return t;
   }
 
+  // Strong-only, max once: turn one short plain middle declarative into a
+  // rhetorical question ("Teams should use these tools." ->
+  // "Why wouldn't teams use these tools?"). Questions are high-perplexity
+  // for detectors and natural for humans. Tight guards keep it grammatical.
+  toQuestion(sentences) {
+    for (let i = 1; i < sentences.length - 1; i++) {
+      const s = sentences[i];
+      if (/^[A-Za-z]+,/.test(s)) continue;
+      if (/[?!:;,]/.test(s)) continue;
+      const m = s.match(/^([A-Z][A-Za-z ]+?) should ([a-z].+)\.$/);
+      if (!m) continue;
+      const subj = m[1].trim();
+      const rest = m[2].trim();
+      if (subj.split(/\s+/).length > 4) continue;
+      if (rest.split(/\s+/).length > 8) continue;
+      if (/^(I|We|You|He|She|It|They)\b/i.test(subj)) continue;
+      sentences[i] = `Why wouldn't ${subj.charAt(0).toLowerCase() + subj.slice(1)} ${rest}?`;
+      return true;
+    }
+    return false;
+  }
+
+  // Strong-only, max once: give one short punchy sentence an exclamation
+  // ("The results were impressive!"). Punctuation variety breaks the flat
+  // declarative rhythm detectors expect.
+  toExclaim(sentences) {
+    const strongAdj = /impressive|amazing|great|excellent|huge|massive|incredible|fantastic|powerful|awesome|remarkable/i;
+    for (let i = 0; i < sentences.length; i++) {
+      const s = sentences[i];
+      if (!/\.$/.test(s)) continue;
+      if (/[?!:;,]/.test(s)) continue;
+      if (s.split(/\s+/).length > 9) continue;
+      if (!strongAdj.test(s)) continue;
+      sentences[i] = s.replace(/\.$/, '!');
+      return true;
+    }
+    return false;
+  }
+
   humanize(text, intensity = 'medium') {
     if (!text || !text.trim()) return text;
     const level = intensity === 'light' ? 0 : intensity === 'strong' ? 2 : 1;
@@ -729,6 +880,11 @@ class TextHumanizer {
     }
 
     sentences = this.normalizeOpeners(sentences);
+
+    if (intensity === 'strong') {
+      this.toQuestion(sentences);
+      this.toExclaim(sentences);
+    }
 
     result = this.normalizePunctuation(sentences.join(' '));
     result = result.split(EG_TOKEN).join('e.g.').split(IE_TOKEN).join('i.e.');
