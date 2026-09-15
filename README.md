@@ -240,9 +240,10 @@ phrases ("delve", "tapestry", "it is important to note", …). The engine
   repeats become a synonym, then are dropped outright ("Also, … Also, …" →
   "Also, … And … …").
 - **Intensity layers**: light = wording only; medium = + sentence splitting;
-  strong = + tighter splitting and bolder voice changes (imperatives,
-  "such as" → "like", hedges like "kind of"). **Use Strong before testing
-  on a detector.**
+  strong = totally casual — tighter splitting, bolder voice (imperatives,
+  rhetorical question, exclamation), spoken slang (*wanna, kinda, gotta*),
+  and every stiff word swapped for its simplest everyday form. **Use Strong
+  before testing on a detector.**
 
 > Honest note: no tool can guarantee a 0% AI score on every detector — detectors
 > change constantly, and short formal texts give any humanizer little to work
