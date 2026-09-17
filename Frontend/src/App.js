@@ -158,17 +158,11 @@ function App() {
         <a className="brand" href="#top">
           <span className="logo-orb" />
           Humanize AI
-          <span className="brand-badge">v2</span>
         </a>
         <div className="nav-links">
           <a href="#tool">Humanizer</a>
           <a href="#how">How it works</a>
-          <a href="https://github.com/arkap1502/Humanize-Ai" target="_blank" rel="noreferrer">GitHub</a>
         </div>
-        <a className="nav-cta" href="#tool">
-          <span className="dot" />
-          Try it now
-        </a>
       </nav>
 
       <header className="hero">
@@ -183,15 +177,6 @@ function App() {
         <div className="hero-cta">
           <a className="btn btn-primary" href="#tool">Humanize my text →</a>
           <a className="btn btn-ghost" href="#how">How it works</a>
-        </div>
-        <div className="proof">
-          <div className="avatars" aria-hidden="true">
-            <span>A</span><span>S</span><span>R</span><span>M</span>
-          </div>
-          <div className="proof-text">
-            <span className="stars">★★★★★</span><br />
-            500+ texts humanized
-          </div>
         </div>
       </header>
 

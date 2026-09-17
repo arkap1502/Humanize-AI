@@ -172,15 +172,6 @@ html {
   box-shadow: 0 0 18px rgba(150, 190, 255, 0.8);
 }
 
-.brand-badge {
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: var(--mint);
-  border: 1px solid rgba(126, 240, 196, 0.35);
-  border-radius: 999px;
-  padding: 2px 8px;
-}
-
 .nav-links {
   display: flex;
   gap: 28px;
@@ -195,34 +186,6 @@ html {
 
 .nav-links a:hover {
   color: var(--text);
-}
-
-.nav-cta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text);
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.05);
-  padding: 9px 18px;
-  border-radius: 999px;
-  transition: background 0.2s, box-shadow 0.2s;
-}
-
-.nav-cta:hover {
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 20px rgba(126, 240, 196, 0.25);
-}
-
-.nav-cta .dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--mint);
-  box-shadow: 0 0 10px var(--mint);
 }
 
 /* ---------- hero ---------- */
@@ -320,51 +283,6 @@ html {
 
 .btn-ghost:hover {
   background: rgba(255, 255, 255, 0.09);
-}
-
-.proof {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  margin-top: 36px;
-  flex-wrap: wrap;
-}
-
-.avatars {
-  display: flex;
-}
-
-.avatars span {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #06110d;
-  border: 2px solid var(--bg);
-  margin-left: -10px;
-}
-
-.avatars span:first-child { margin-left: 0; }
-.avatars span:nth-child(1) { background: linear-gradient(135deg, #7ef0c4, #34d399); }
-.avatars span:nth-child(2) { background: linear-gradient(135deg, #bcd8ff, #6ea8ff); }
-.avatars span:nth-child(3) { background: linear-gradient(135deg, #e9c6ff, #a78bfa); }
-.avatars span:nth-child(4) { background: linear-gradient(135deg, #ffd9a0, #fb923c); }
-
-.proof-text {
-  color: var(--muted);
-  font-size: 0.88rem;
-  text-align: left;
-  line-height: 1.5;
-}
-
-.stars {
-  color: var(--mint);
-  letter-spacing: 2px;
 }
 
 /* ---------- tool card ---------- */
