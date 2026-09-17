@@ -159,10 +159,6 @@ function App() {
           <span className="logo-orb" />
           Humanize AI
         </a>
-        <div className="nav-links">
-          <a href="#tool">Humanizer</a>
-          <a href="#how">How it works</a>
-        </div>
       </nav>
 
       <header className="hero">

@@ -172,22 +172,6 @@ html {
   box-shadow: 0 0 18px rgba(150, 190, 255, 0.8);
 }
 
-.nav-links {
-  display: flex;
-  gap: 28px;
-}
-
-.nav-links a {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.2s;
-}
-
-.nav-links a:hover {
-  color: var(--text);
-}
-
 /* ---------- hero ---------- */
 .hero {
   position: relative;
@@ -713,10 +697,6 @@ html {
 @media (max-width: 768px) {
   .nav {
     padding: 14px 18px;
-  }
-
-  .nav-links {
-    display: none;
   }
 
   .hero {
