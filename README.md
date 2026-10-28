@@ -86,6 +86,19 @@ One-time setup:
 
 ## Setup Instructions (local)
 
+### Easiest: run everything from the project root
+
+```bash
+npm run install:all   # first time only — installs Backend + Frontend deps
+npm start             # runs backend (:5000) + frontend (:3000) together
+```
+
+The frontend auto-uses `http://localhost:5000` when you open it from
+`localhost`, and falls back to in-browser humanization if the backend
+isn't running — so either way the "Humanize Text" button works.
+
+### Or run each part manually
+
 ### Backend Setup
 
 1. Navigate to the Backend directory:

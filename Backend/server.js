@@ -10,16 +10,18 @@ const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = [
   'http://localhost:3000',
+  'http://127.0.0.1:3000',
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow same-origin / curl / mobile apps (no origin) and the allowlist
+    // Allow same-origin / curl / mobile apps (no origin) and the allowlist.
+    // Permissive fallback keeps preview URLs (Live Server, Pages) working.
     if (!origin || allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-    return callback(null, true); // permissive fallback so Pages preview URLs keep working
+    return callback(null, true);
   }
 }));
 app.use(bodyParser.json());
@@ -68,7 +70,8 @@ app.post('/api/detect', (req, res) => {
   }
 });
 
-app.post('/api/batch-humanize', (req, res) => {  try {
+app.post('/api/batch-humanize', (req, res) => {
+  try {
     const { texts, intensity = 'medium' } = req.body;
 
     if (!texts || !Array.isArray(texts)) {
@@ -89,8 +92,29 @@ app.post('/api/batch-humanize', (req, res) => {  try {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// 404 for unknown API routes (keeps frontend proxy errors readable)
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'Not found' });
 });
+
+function startServer() {
+  const server = app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+  server.on('error', (err) => {
+    if (err && err.code === 'EADDRINUSE') {
+      console.error(`Port ${PORT} is already in use. Stop the other process or set PORT=xxxx in Backend/.env (copy from .env.example).`);
+      process.exit(1);
+    }
+    throw err;
+  });
+  return server;
+}
+
+// Only auto-listen when run directly (`node server.js` / `npm start`).
+// Requiring this file (e.g. in tests) must not bind a port as a side effect.
+if (require.main === module) {
+  startServer();
+}
 
 module.exports = app;

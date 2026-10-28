@@ -1,0 +1,21 @@
+{
+  "name": "humanize-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Humanize AI - convert AI-generated text into natural, human-like writing",
+  "scripts": {
+    "install:all": "npm --prefix Backend install && npm --prefix Frontend install",
+    "backend": "npm --prefix Backend start",
+    "backend:dev": "npm --prefix Backend run dev",
+    "frontend": "npm --prefix Frontend start",
+    "start": "concurrently \"npm:backend\" \"npm:frontend\"",
+    "dev": "concurrently \"npm:backend:dev\" \"npm:frontend\"",
+    "build": "npm --prefix Frontend run build",
+    "sync": "node scripts/sync-humanizer.js"
+  },
+  "keywords": ["ai", "humanize", "text"],
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
