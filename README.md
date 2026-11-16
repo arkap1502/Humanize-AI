@@ -17,7 +17,7 @@ A powerful web application that converts AI-generated text into natural, human-l
 Humanize Ai/
 ├── Backend/
 │   ├── package.json
-│   └── server.js
+│   └── server.js         # API + serves Frontend/build in production
 ├── Frontend/
 │   ├── package.json
 │   ├── public/
@@ -27,6 +27,7 @@ Humanize Ai/
 │       ├── App.css
 │       ├── index.js
 │       └── index.css
+├── render.yaml           # one-service Render deploy
 └── README.md
 ```
 
@@ -53,6 +54,51 @@ live-demo/
 
 > Do NOT just double-click `index.html` — browsers block ES modules on
 > `file://` URLs, so you must open it through Live Server (http).
+
+## Deployment (Render)
+
+Render runs the whole app as **one web service**: Express serves the API *and*
+the built React UI from the same origin, so there is no CORS setup and no second
+URL to configure. The blueprint is already in the repo (`render.yaml`).
+
+### Deploy with the blueprint (recommended)
+
+1. Push this repo to GitHub.
+2. In Render: **New + → Blueprint**, pick the repo, then **Apply**.
+3. Wait for the first build (a few minutes) and open the service URL, e.g.
+   `https://humanize-ai.onrender.com`.
+
+What the blueprint does:
+
+| Setting | Value |
+| --- | --- |
+| Runtime | Node (`NODE_VERSION=20.19.0`) |
+| Build command | `npm run deploy:build` (installs `Backend/` + `Frontend/`, then `react-scripts build`) |
+| Start command | `cd Backend && npm start` |
+| Health check | `/api/health` |
+| Plan | free |
+
+### Or create the service manually
+
+- **New + → Web Service**, root directory: repo root.
+- Build command: `npm run deploy:build`
+- Start command: `cd Backend && npm start`
+- Health check path: `/api/health`
+- Environment: `NODE_VERSION` = `20.19.0` (React Scripts 5 needs Node 18+)
+
+### Notes
+
+- **One URL for everything.** `GET /` serves the React app, `/api/*` serves the
+  API, and unknown non-API paths fall back to `index.html`.
+- **Free plan sleeps.** After ~15 minutes of inactivity Render spins the service
+  down; the next visit takes ~30–60 s to wake up. The UI keeps working even
+  then, because it humanizes in the browser with the same engine
+  (`Frontend/src/humanizer.js`, synced from `shared/humanizer.js`).
+- **Deploying only the UI** is also possible: create a **Static Site** with build
+  command `cd Frontend && npm ci && npm run build` and
+  publish directory `Frontend/build` (see the GitHub Pages section below).
+- Environment variables are optional here. `PORT` is provided by Render.
+  `FRONTEND_URL` only matters if you host the UI on a different domain.
 
 ## Deployment (GitHub Pages)
 

@@ -1,0 +1,28 @@
+# Render Blueprint for Humanize AI.
+# One service serves both the React UI and the Express API from the same origin,
+# so there is no CORS setup and no separate frontend URL to configure.
+#
+# Usage: Render Dashboard -> New + -> Blueprint -> pick this repo -> Apply.
+services:
+  - type: web
+    name: humanize-ai
+    runtime: node
+    plan: free
+    branch: main
+    autoDeploy: true
+    buildCommand: npm run deploy:build
+    startCommand: cd Backend && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20.19.0
+      # Render sets CI=true for builds, which makes React Scripts treat lint
+      # warnings as errors. Keep builds resilient.
+      - key: CI
+        value: "false"
+      # Smaller build output + lower memory use on the free plan.
+      - key: GENERATE_SOURCEMAP
+        value: "false"
+      # Optional: only needed if you host the UI somewhere else.
+      # - key: FRONTEND_URL
+      #   value: https://your-frontend-domain.com

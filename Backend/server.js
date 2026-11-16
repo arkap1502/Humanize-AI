@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 const { humanizer } = require('./humanizer');
 const { analyzeText } = require('./detector');
@@ -27,8 +29,17 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Serve the built React app when it exists. This is what makes a single
+// Render web service enough: `Frontend/build` is created by the build step,
+// then Express serves both the UI and the API from the same origin.
+const FRONTEND_BUILD = path.join(__dirname, '..', 'Frontend', 'build');
+const hasFrontendBuild = fs.existsSync(path.join(FRONTEND_BUILD, 'index.html'));
+
 // Routes
 app.get('/', (req, res) => {
+  if (hasFrontendBuild) {
+    return res.sendFile(path.join(FRONTEND_BUILD, 'index.html'));
+  }
   res.json({ message: 'Humanize AI API is running' });
 });
 
@@ -97,9 +108,22 @@ app.use('/api', (req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
 
+// Serve the built React app when it exists (static assets + SPA fallback).
+if (hasFrontendBuild) {
+  app.use(express.static(FRONTEND_BUILD, { index: false, maxAge: '1h' }));
+
+  // Client-side routing: any non-API GET returns index.html.
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(FRONTEND_BUILD, 'index.html'));
+  });
+}
+
 function startServer() {
   const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    if (hasFrontendBuild) {
+      console.log(`Serving frontend from ${FRONTEND_BUILD}`);
+    }
   });
   server.on('error', (err) => {
     if (err && err.code === 'EADDRINUSE') {

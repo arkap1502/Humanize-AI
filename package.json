@@ -11,6 +11,7 @@
     "start": "concurrently \"npm:backend\" \"npm:frontend\"",
     "dev": "concurrently \"npm:backend:dev\" \"npm:frontend\"",
     "build": "npm --prefix Frontend run build",
+    "deploy:build": "cd Backend && npm ci && cd ../Frontend && npm ci --include=dev && npm run build",
     "sync": "node scripts/sync-humanizer.js"
   },
   "keywords": ["ai", "humanize", "text"],
