@@ -24,10 +24,11 @@ const REPLACEMENTS = [
   ['for the purpose of', 'for'],
   ['in order to', 'to'],
   ['with regard to', 'about'],
-  ['a large number of', 'many'],
-  ['a wide range of', 'many'],
-  ['a multitude of', 'many'],
-  ['a variety of', 'many'],
+  ['a large number of', 'a lot of'],
+  ['a wide range of', 'a lot of'],
+  ['a wide array of', 'a lot of'],
+  ['a multitude of', 'a lot of'],
+  ['a variety of', 'a lot of'],
   ['a number of', 'several'],
   ['in the realm of', 'in'],
   ['testament to the', 'proof of the'],
@@ -59,7 +60,7 @@ const REPLACEMENTS = [
   ['seamless', 'smooth'],
   ['pivotal', 'key'],
   ['crucial', 'key'],
-  ['comprehensive', 'wide'],
+  ['comprehensive', 'complete'],
   ['intricate', 'detailed'],
   ['showcases', 'shows'],
   ['showcase', 'show'],
@@ -106,14 +107,21 @@ const REPLACEMENTS = [
   ['reveals', 'shows'],
   ['revealed', 'showed'],
   ['reveal', 'show'],
-  ['facilitates', 'helps'],
-  ['facilitated', 'helped'],
-  ['facilitate', 'help'],
-  ['enables', 'lets'],
-  ['enabled', 'let'],
-  ['enable', 'let'],
-  ['allows', 'lets'],
-  ['allowed', 'let'],
+  ['facilitating', 'helping with'],
+  ['facilitates', 'helps with'],
+  ['facilitated', 'helped with'],
+  ['facilitate', 'help with'],
+  ['enables', 'supports'],
+  ['enabled', 'supported'],
+  ['enable', 'support'],
+  ['enabling', 'supporting'],
+  ['allows for', 'supports'],
+  ['allow for', 'support'],
+  ['allowed for', 'supported'],
+  ['allows', 'supports'],
+  ['allowed', 'supported'],
+  ['allow', 'support'],
+  ['allowing', 'supporting'],
   ['ensures', 'makes sure'],
   ['ensured', 'made sure'],
   ['ensure', 'make sure'],
@@ -160,6 +168,10 @@ const REPLACEMENTS = [
   ['various', 'different'],
   ['several', 'a few'],
   ['sufficient', 'enough'],
+  ['most significant', 'biggest'],
+  ['more significant', 'bigger'],
+  ['less significant', 'less important'],
+  ['highly significant', 'very important'],
   ['significant', 'major'],
   ['substantial', 'large'],
 
@@ -185,6 +197,26 @@ const REPLACEMENTS = [
   ['along the lines of', 'like'],
   ['with respect to', 'about'],
   ['in terms of', 'when it comes to'],
+  ['the vast majority of', 'most'],
+  ['a majority of', 'most'],
+  ['a large portion of', 'a lot of'],
+  ['a growing number of', 'more'],
+  ['has the potential to', 'can'],
+  ['have the potential to', 'can'],
+  ['is capable of', 'can'],
+  ['in an effort to', 'to'],
+  ['is composed of', 'is made of'],
+  ['is comprised of', 'is made of'],
+  ['in the event that', 'if'],
+  ['on a daily basis', 'every day'],
+  ['on a regular basis', 'regularly'],
+  ['take into consideration', 'consider'],
+  ['provide assistance', 'help'],
+  ['at the end of the day', 'in the end'],
+  ['in today's digital age', 'today'],
+  ['in the modern world', 'today'],
+  ['in the modern era', 'today'],
+  ['it is worth mentioning that', 'note that'],
   ['firstly', 'first'],
   ['secondly', 'second'],
   ['thirdly', 'third'],
@@ -274,17 +306,19 @@ const REPLACEMENTS = [
   ['revolutionizes', 'changes'],
   ['revolutionized', 'changed'],
   ['revolutionize', 'change'],
-  ['cutting-edge', 'latest'],
-  ['cutting edge', 'latest'],
-  ['state-of-the-art', 'latest'],
-  ['state of the art', 'latest'],
+  ['cutting-edge', 'modern'],
+  ['cutting edge', 'modern'],
+  ['state-of-the-art', 'modern'],
+  ['state of the art', 'modern'],
   ['supercharge', 'boost'],
   ['supercharges', 'boosts'],
   ['supercharged', 'boosted'],
   ['serves as', 'acts as'],
   ['serve as', 'act as'],
-  ['plays a key role in', 'matters a lot for'],
-  ['play a key role in', 'matter a lot for'],
+  ['plays a key role in', 'is a big part of'],
+  ['play a key role in', 'are a big part of'],
+  ['plays a vital role in', 'is a big part of'],
+  ['play a vital role in', 'are a big part of'],
   ['the latter', 'the second'],
   ['respectively', 'in that order'],
 
@@ -397,8 +431,8 @@ const REPLACEMENTS = [
   ['watershed moment', 'turning point'],
   ['inflection point', 'turning point'],
   ['step change', 'big change'],
-  ['orders of magnitude', 'lot'],
-  ['order of magnitude', 'lot'],
+  ['orders of magnitude', 'a lot'],
+  ['order of magnitude', 'a lot'],
   ['exponentially', 'fast'],
   ['proliferating', 'spreading'],
   ['proliferates', 'spreads'],
@@ -446,7 +480,7 @@ const REPLACEMENTS = [
   ['next-generation', 'new'],
   ['next generation', 'new'],
   ['bleeding-edge', 'new'],
-  ['leading-edge', 'latest'],
+  ['leading-edge', 'modern'],
   ['trailblazing', 'new'],
   ['innovative', 'creative'],
   ['transformative', 'powerful'],
@@ -720,7 +754,6 @@ const REPLACEMENTS = [
   ['dosage', 'dose'],
   ['administering', 'giving'],
   ['administers', 'gives'],
-  ['administered', 'gave'],
   ['administer', 'give'],
   ['prognosis', 'outlook'],
   ['residence', 'home'],
@@ -772,7 +805,6 @@ const REPLACEMENTS = [
   ['double click on', 'focus on'],
   ['at dawn', 'early in the morning'],
   ['at dusk', 'in the evening'],
-  ['quarterly', 'every quarter'],
   ['annually', 'every year'],
   ['momentarily', 'soon'],
   ['shortly', 'soon'],
@@ -797,6 +829,7 @@ const REPLACEMENTS = [
   ['progeny', 'kids'],
   ['adolescents', 'teens'],
   ['adolescent', 'teen'],
+  ['the elderly', 'older people'],
   ['elderly', 'older'],
   ['infants', 'babies'],
   ['infant', 'baby'],
@@ -980,7 +1013,7 @@ const REPLACEMENTS = [
 
   // ---- Strong-only casualization ----
   ['a lot of', 'tons of', 2],
-  [/(?<!would\s)\brather\b/gi, 'pretty', 2],
+  [/(?<!would\s)\brather\b(?!\s+than)/gi, 'pretty', 2],
   [/\bquite\b(?!\s+a\s+few)(?!\s+the\b)/gi, 'pretty', 2],
 
   // ---- Stiff nouns -> plain nouns ----
@@ -1225,6 +1258,13 @@ export class TextHumanizer {
     t = t.replace(/\s+([.,!?;:])/g, '$1'); // no space before punctuation
     t = t.replace(/([.,!?;:])([A-Za-z])/g, '$1 $2'); // space after punctuation
     t = t.replace(/\s+/g, ' ').trim();
+    // "But, ..." / "And, ..." are not English; drop the comma.
+    t = t.replace(/\b(But|And)\s*,\s+/g, '$1 ');
+    // "many information" -> "a lot of information" (uncountable nouns).
+    t = t.replace(
+      /\bmany\s+(information|data|research|evidence|knowledge|advice|feedback|progress|equipment|software|hardware|access|news|money|time|work|content|traffic|staff|training|support)\b/gi,
+      'a lot of $1'
+    );
     // Capitalize the first letter of every sentence.
     t = t.replace(/(^|[.!?]\s+)([a-z])/g, (m, p1, p2) => p1 + p2.toUpperCase());
     // Standalone "i" -> "I".
@@ -1271,6 +1311,35 @@ export class TextHumanizer {
     return false;
   }
 
+  // Repairs verb frames that a plain word swap would break. Runs before the
+  // replacement list so the swapped wording is grammatical, not just "simpler".
+  applyGrammarRules(text) {
+    // Passive modals: "was/were allowed to leave" -> "could leave",
+    // "is allowed to edit" -> "can edit". (Active "allowed X to Y" below.)
+    text = text.replace(/\b(?:was|were|been|being)\s+(?:allowed|enabled)\s+to\s+/gi, 'could ');
+    text = text.replace(/\b(?:is|are)\s+(?:allowed|enabled)\s+to\s+/gi, 'can ');
+
+    // Passive medical verbs: "was administered" -> "was given" (never "was gave").
+    text = text.replace(/\b(was|were|is|are|been|being)\s+administered\b/gi, '$1 given');
+
+    // "allows/enables X to Y" -> "lets X Y". The infinitive marker must go,
+    // because "let" takes a bare verb ("lets teams collaborate", not
+    // "lets teams to collaborate").
+    text = text.replace(
+      /\b(allows?|allowing|enables?|enabling|enabled|allowed)\b((?:\s+[A-Za-z0-9'-]+){1,4})\s+to\s+/g,
+      (match, verb, mid) => {
+        if (/^\s*to\b/i.test(mid) || /\bfor\b/i.test(mid)) return match;
+        const base = /ing$/i.test(verb) ? 'letting' : /s$/i.test(verb) ? 'lets' : 'let';
+        const out = verb[0] === verb[0].toUpperCase()
+          ? base[0].toUpperCase() + base.slice(1)
+          : base;
+        return out + mid + ' ';
+      }
+    );
+
+    return text;
+  }
+
   humanize(text, intensity = 'medium') {
     if (!text || !text.trim()) return text;
     const level = intensity === 'light' ? 0 : intensity === 'strong' ? 2 : 1;
@@ -1278,6 +1347,7 @@ export class TextHumanizer {
     let result = text
       .replace(/e\.g\./gi, EG_TOKEN)
       .replace(/i\.e\./gi, IE_TOKEN);
+    result = this.applyGrammarRules(result);
     result = this.applyReplacements(result, level);
     let sentences = this.splitSentences(result);
 
