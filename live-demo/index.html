@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#060809" />
+  <meta name="theme-color" content="#f4f5f8" />
   <meta name="description" content="AI to Human Text Converter" />
   <title>Humanize AI</title>
   <link rel="stylesheet" href="./styles.css" />
@@ -18,116 +18,199 @@
     No build step needed. Works fully offline in the browser. If you also run
     the backend (Backend -> npm start), the page will use the API automatically.
   -->
-  <div class="App" id="top">
-    <div class="bg" aria-hidden="true">
-      <div class="orb orb-a"></div>
-      <div class="orb orb-b"></div>
-      <div class="orb orb-c"></div>
-      <div class="ring ring-1"></div>
-      <div class="ring ring-2"></div>
-      <div class="ring ring-3"></div>
-      <div class="grain"></div>
-      <div class="vignette"></div>
-    </div>
-
-    <nav class="nav">
-      <a class="brand" href="#top">
-        <span class="logo-orb"></span>
-        Humanize AI
-      </a>
-    </nav>
-
-    <header class="hero">
-      <span class="pill">AI Text Humanizer</span>
-      <h1>
-        Make AI text <span class="grad">sound human</span>
-      </h1>
-      <p class="sub">
-        Paste robotic AI-generated copy, pick an intensity, and get natural
-        writing back — with a live AI-likelihood score to prove it.
-      </p>
-      <div class="hero-cta">
-        <a class="btn btn-primary" href="#tool">Humanize my text →</a>
-        <a class="btn btn-ghost" href="#how">How it works</a>
+  <div class="app" id="top">
+    <header class="site-header">
+      <div class="shell nav">
+        <a class="brand" href="#top">
+          <span class="brand-mark">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+            </svg>
+          </span>
+          Humanize AI
+        </a>
+        <a class="nav-link" href="#how">How it works</a>
       </div>
     </header>
 
-    <main class="container" id="tool">
-      <div class="tool-card">
-        <div class="tool-head">
-          <h2>Humanize your text</h2>
-          <p>Paste AI-generated text below — everything runs instantly, right here.</p>
+    <main>
+      <section class="hero shell">
+        <h1>Make AI text sound human.</h1>
+        <p class="hero-sub">
+          Paste AI-generated copy, choose how far to push it, and get natural writing
+          back. A live AI-likelihood score shows exactly what changed.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#tool">
+            Humanize my text
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 5v14" />
+              <path d="m19 12-7 7-7-7" />
+            </svg>
+          </a>
+          <a class="btn btn-ghost" href="#how">How it works</a>
         </div>
-        <div class="content">
-          <div class="textarea-container">
-            <label for="input-text">Enter AI-generated text:</label>
-            <textarea id="input-text" placeholder="Paste your AI-generated text here..."></textarea>
+      </section>
+
+      <section class="shell tool-shell" id="tool">
+        <div class="surface">
+          <div class="surface-head">
+            <h2>Humanize your text</h2>
+            <p>Paste AI-generated text, pick an intensity, then review the result and its score.</p>
           </div>
 
-          <div id="input-score"></div>
+          <div class="tool-section">
+            <div class="field-head">
+              <label class="field-label" for="input-text">Your text</label>
+              <span class="field-meta" id="word-count">0 words</span>
+            </div>
+            <textarea id="input-text" placeholder="Paste your AI-generated text here…"></textarea>
+            <div id="input-score"></div>
+          </div>
 
-          <div class="controls">
-            <div class="intensity-selector">
-              <label for="intensity">Humanization Intensity:</label>
-              <select id="intensity">
-                <option value="light">Light - Subtle changes</option>
-                <option value="medium" selected>Medium - Balanced approach</option>
-                <option value="strong">Strong - More casual</option>
-              </select>
+          <div class="tool-section controls">
+            <div class="control-field">
+              <div class="field-head">
+                <label class="field-label" for="intensity">Intensity</label>
+              </div>
+              <div class="select-wrap">
+                <select id="intensity">
+                  <option value="light">Light: subtle edits</option>
+                  <option value="medium" selected>Medium: balanced</option>
+                  <option value="strong">Strong: casual</option>
+                </select>
+                <svg class="icon select-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
             </div>
 
-            <div class="button-container">
-              <button class="button primary-button" id="humanize-btn">Humanize Text</button>
-              <button class="button secondary-button" id="clear-btn">Clear</button>
+            <div class="actions">
+              <button type="button" class="btn btn-primary" id="humanize-btn">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z" />
+                  <path d="m14 7 3 3" />
+                  <path d="M5 6v4" />
+                  <path d="M19 14v4" />
+                  <path d="M10 2v2" />
+                  <path d="M7 8H3" />
+                  <path d="M21 16h-4" />
+                  <path d="M11 3H9" />
+                </svg>
+                Humanize text
+              </button>
+              <button type="button" class="btn btn-ghost" id="clear-btn">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 6h18" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  <path d="M10 11v6" />
+                  <path d="M14 11v6" />
+                </svg>
+                Clear
+              </button>
             </div>
           </div>
 
-          <div class="error" id="error" style="display: none;"></div>
+          <div class="tool-section" id="error-section" style="display: none;">
+            <div class="alert" role="alert">
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4" />
+                <path d="M12 16h.01" />
+              </svg>
+              <span id="error"></span>
+            </div>
+          </div>
 
-          <div class="result-container" id="result-container" style="display: none;">
-            <h3>Humanized Result:</h3>
+          <div class="tool-section" id="result-section" style="display: none;">
+            <div class="result-head">
+              <div>
+                <h3>Result</h3>
+                <p class="result-meta" id="result-meta">Medium intensity</p>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" id="copy-btn">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect width="8" height="8" x="8" y="8" rx="2" />
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                </svg>
+                <span id="copy-label">Copy</span>
+              </button>
+            </div>
+
             <div class="result-text" id="result-text"></div>
+
             <div class="stats">
-              <div class="stat">
-                <div class="stat-value" id="original-words">0</div>
-                <div class="stat-label">Original Words</div>
+              <div>
+                <span class="stat-label">Original</span>
+                <span class="stat-value" id="original-words">0 words</span>
               </div>
-              <div class="stat">
-                <div class="stat-value" id="humanized-words">0</div>
-                <div class="stat-label">Humanized Words</div>
+              <div>
+                <span class="stat-label">Humanized</span>
+                <span class="stat-value" id="humanized-words">0 words</span>
               </div>
             </div>
-            <button class="button copy-button" id="copy-btn" style="margin-top: 20px;">Copy to Clipboard</button>
+
             <div id="output-score"></div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <section class="shell how" id="how">
+        <div class="section-head">
+          <h2>How it works</h2>
+          <p>Three steps, no sign-up, no upload required.</p>
+        </div>
+        <ol class="steps">
+          <li class="step">
+            <span class="step-icon">
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                <path d="M9 14h6" />
+                <path d="M9 18h6" />
+                <path d="M9 10h6" />
+              </svg>
+            </span>
+            <h3>Paste and detect</h3>
+            <p>Your text is scored live for AI signals: marker phrases, uniform sentences, repeated openers.</p>
+          </li>
+          <li class="step">
+            <span class="step-icon">
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z" />
+                <path d="m14 7 3 3" />
+                <path d="M5 6v4" />
+                <path d="M19 14v4" />
+                <path d="M10 2v2" />
+                <path d="M7 8H3" />
+                <path d="M21 16h-4" />
+                <path d="M11 3H9" />
+              </svg>
+            </span>
+            <h3>Humanize</h3>
+            <p>Pick light, medium, or strong. Stiff phrasing is rewritten, long sentences split, rhythm varied.</p>
+          </li>
+          <li class="step">
+            <span class="step-icon">
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m12 14 4-4" />
+                <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+              </svg>
+            </span>
+            <h3>Verify the score</h3>
+            <p>Watch the AI-likelihood percentage drop and inspect exactly which signals were removed.</p>
+          </li>
+        </ol>
+      </section>
     </main>
 
-    <section class="features" id="how">
-      <h2>How it works</h2>
-      <p>Three steps. No sign-up, no server needed — it all runs in your browser.</p>
-      <div class="feature-grid">
-        <div class="feature-card">
-          <span class="feature-num">1</span>
-          <h3>Paste &amp; detect</h3>
-          <p>Your text is scored live for AI signals — marker phrases, uniform sentences, repeated openers.</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-num">2</span>
-          <h3>Humanize</h3>
-          <p>Pick Light, Medium or Strong. Stiff phrasing is rewritten, long sentences split, rhythm varied.</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-num">3</span>
-          <h3>Verify the score</h3>
-          <p>Watch the AI-likelihood percentage drop and inspect exactly which signals were removed.</p>
-        </div>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <span>Humanize AI runs entirely in your browser.</span>
+        <span>Scores are an estimate, not a guarantee.</span>
       </div>
-    </section>
-
-    <footer class="footer">
-      Humanize AI — runs 100% in your browser.
     </footer>
   </div>
 
