@@ -30,46 +30,29 @@
           </span>
           Humanize AI
         </a>
-        <a class="nav-link" href="#how">How it works</a>
+        <div class="nav-actions">
+          <a class="nav-link" href="#how">How it works</a>
+          <button type="button" class="icon-button" id="fullscreen-btn" aria-label="Enter full screen" title="Enter full screen">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+              <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+              <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+              <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+            </svg>
+          </button>
+        </div>
       </div>
     </header>
 
-    <main>
-      <section class="hero shell">
-        <h1>Make AI text sound human.</h1>
-        <p class="hero-sub">
-          Paste AI-generated copy, choose how far to push it, and get natural writing
-          back. A live AI-likelihood score shows exactly what changed.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#tool">
-            Humanize my text
-            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 5v14" />
-              <path d="m19 12-7 7-7-7" />
-            </svg>
-          </a>
-          <a class="btn btn-ghost" href="#how">How it works</a>
-        </div>
-      </section>
-
-      <section class="shell tool-shell" id="tool">
-        <div class="surface">
-          <div class="surface-head">
-            <h2>Humanize your text</h2>
-            <p>Paste AI-generated text, pick an intensity, then review the result and its score.</p>
+    <main class="app-main">
+      <section class="workspace-screen" id="tool">
+        <div class="toolbar">
+          <div class="toolbar-copy">
+            <h1>Humanize your text</h1>
+            <p>Paste AI-generated text, choose an intensity, then compare the result side by side.</p>
           </div>
 
-          <div class="tool-section">
-            <div class="field-head">
-              <label class="field-label" for="input-text">Your text</label>
-              <span class="field-meta" id="word-count">0 words</span>
-            </div>
-            <textarea id="input-text" placeholder="Paste your AI-generated text here…"></textarea>
-            <div id="input-score"></div>
-          </div>
-
-          <div class="tool-section controls">
+          <div class="toolbar-actions">
             <div class="control-field">
               <div class="field-head">
                 <label class="field-label" for="intensity">Intensity</label>
@@ -112,25 +95,42 @@
               </button>
             </div>
           </div>
+        </div>
 
-          <div class="tool-section" id="error-section" style="display: none;">
-            <div class="alert" role="alert">
-              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 8v4" />
-                <path d="M12 16h.01" />
-              </svg>
-              <span id="error"></span>
-            </div>
-          </div>
-
-          <div class="tool-section" id="result-section" style="display: none;">
-            <div class="result-head">
+        <div class="workspace">
+          <section class="pane" aria-labelledby="input-heading">
+            <div class="pane-head">
               <div>
-                <h3>Result</h3>
-                <p class="result-meta" id="result-meta">Medium intensity</p>
+                <h2 id="input-heading">Input</h2>
+                <p class="pane-meta" id="input-meta">0 words</p>
               </div>
-              <button type="button" class="btn btn-ghost btn-sm" id="copy-btn">
+            </div>
+
+            <div class="pane-body">
+              <textarea id="input-text" placeholder="Paste your AI-generated text here…" aria-label="Your text"></textarea>
+
+              <div id="error-section" style="display: none;">
+                <div class="alert" role="alert">
+                  <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 8v4" />
+                    <path d="M12 16h.01" />
+                  </svg>
+                  <span id="error"></span>
+                </div>
+              </div>
+
+              <div id="input-score"></div>
+            </div>
+          </section>
+
+          <section class="pane pane-result" aria-labelledby="result-heading">
+            <div class="pane-head">
+              <div>
+                <h2 id="result-heading">Result</h2>
+                <p class="pane-meta" id="result-meta">Waiting for text</p>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" id="copy-btn" style="display: none;">
                 <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <rect width="8" height="8" x="8" y="8" rx="2" />
                   <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
@@ -139,21 +139,23 @@
               </button>
             </div>
 
-            <div class="result-text" id="result-text"></div>
+            <div class="pane-body">
+              <div class="empty-state" id="empty-state">
+                <span class="empty-icon">
+                  <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                  </svg>
+                </span>
+                <p>Your humanized text will appear here.</p>
+                <span class="empty-hint">Add text on the left, then choose Humanize.</span>
+              </div>
 
-            <div class="stats">
-              <div>
-                <span class="stat-label">Original</span>
-                <span class="stat-value" id="original-words">0 words</span>
-              </div>
-              <div>
-                <span class="stat-label">Humanized</span>
-                <span class="stat-value" id="humanized-words">0 words</span>
-              </div>
+              <div class="result-text" id="result-text" style="display: none;"></div>
+
+              <div id="output-score"></div>
             </div>
-
-            <div id="output-score"></div>
-          </div>
+          </section>
         </div>
       </section>
 

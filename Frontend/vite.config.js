@@ -13,5 +13,12 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    // Let the dev server talk to the local Express API without CORS.
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+    },
   },
 });

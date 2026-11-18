@@ -11,16 +11,16 @@ const intensitySelect = document.getElementById('intensity');
 const humanizeBtn = document.getElementById('humanize-btn');
 const clearBtn = document.getElementById('clear-btn');
 const copyBtn = document.getElementById('copy-btn');
+const copyLabel = document.getElementById('copy-label');
 const errorSection = document.getElementById('error-section');
 const errorBox = document.getElementById('error');
-const resultSection = document.getElementById('result-section');
+const emptyState = document.getElementById('empty-state');
 const resultMeta = document.getElementById('result-meta');
 const resultText = document.getElementById('result-text');
-const originalWords = document.getElementById('original-words');
-const humanizedWords = document.getElementById('humanized-words');
-const wordCount = document.getElementById('word-count');
+const inputMeta = document.getElementById('input-meta');
 const inputScoreBox = document.getElementById('input-score');
 const outputScoreBox = document.getElementById('output-score');
+const fullscreenBtn = document.getElementById('fullscreen-btn');
 let lastInputScore = null;
 let copyTimer = null;
 
@@ -33,6 +33,10 @@ const ICONS = {
   check: '<path d="M20 6 9 17l-5-5"/>',
   'wand-sparkles':
     '<path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/>',
+  maximize:
+    '<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
+  minimize:
+    '<path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>',
   loader:
     '<path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/>',
 };
@@ -52,8 +56,6 @@ function icon(name, size = 16) {
 
 const DEFAULT_BTN_HTML = icon('wand-sparkles') + 'Humanize text';
 const LOADING_BTN_HTML = icon('loader') + 'Processing…';
-const COPY_BTN_HTML = icon('copy') + '<span>Copy</span>';
-const COPIED_BTN_HTML = icon('check') + '<span>Copied</span>';
 
 function countWords(text) {
   return text.split(/\s+/).filter((word) => word.length > 0).length;
@@ -115,9 +117,7 @@ function renderScore(box, title, analysis, delta) {
     deltaChip.className = 'status';
     deltaChip.innerHTML = icon(delta > 0 ? 'arrow-down-right' : 'arrow-up-right', 16);
     deltaChip.appendChild(
-      document.createTextNode(
-        Math.abs(delta) + ' pts ' + (delta > 0 ? 'lower' : 'higher') + ' than input'
-      )
+      document.createTextNode(Math.abs(delta) + ' pts ' + (delta > 0 ? 'lower' : 'higher'))
     );
     figure.appendChild(deltaChip);
   }
@@ -216,11 +216,15 @@ async function handleHumanize() {
   humanizeBtn.setAttribute('aria-busy', 'true');
   humanizeBtn.innerHTML = LOADING_BTN_HTML;
   showError('');
-  resultSection.style.display = 'none';
   resultText.textContent = '';
+  resultText.style.display = 'none';
+  emptyState.style.display = 'flex';
+  copyBtn.style.display = 'none';
+  resultMeta.textContent = 'Waiting for text';
+  renderScore(outputScoreBox, '', null);
   // Refresh the input score in case the user pasted and clicked instantly.
   lastInputScore = analyzeText(text);
-  renderScore(inputScoreBox, 'Input AI likelihood', lastInputScore);
+  renderScore(inputScoreBox, 'AI likelihood', lastInputScore);
 
   try {
     let humanized;
@@ -234,16 +238,17 @@ async function handleHumanize() {
     }
 
     resultText.textContent = humanized;
-    resultMeta.textContent = intensityText(intensitySelect.value) + ' intensity';
-    originalWords.textContent = wordsLabel(countWords(text));
-    humanizedWords.textContent = wordsLabel(countWords(humanized));
-    resultSection.style.display = 'block';
+    resultMeta.textContent =
+      intensityText(intensitySelect.value) + ' intensity · ' + wordsLabel(countWords(humanized));
+    resultText.style.display = 'block';
+    emptyState.style.display = 'none';
+    copyBtn.style.display = 'inline-flex';
     const outAnalysis = analyzeText(humanized);
     const delta =
       lastInputScore && lastInputScore.reliable && outAnalysis.reliable
         ? lastInputScore.score - outAnalysis.score
         : null;
-    renderScore(outputScoreBox, 'Output AI likelihood', outAnalysis, delta);
+    renderScore(outputScoreBox, 'AI likelihood', outAnalysis, delta);
   } catch (err) {
     showError('Failed to humanize text. Please try again.');
     console.error('Error:', err);
@@ -254,18 +259,30 @@ async function handleHumanize() {
   }
 }
 
+function setCopyState(copied) {
+  const svg = copyBtn.querySelector('svg');
+  const next = icon(copied ? 'check' : 'copy');
+  if (svg) {
+    svg.outerHTML = next;
+  } else {
+    copyBtn.insertAdjacentHTML('afterbegin', next);
+  }
+  copyLabel.textContent = copied ? 'Copied' : 'Copy';
+}
+
 function resetCopyButton() {
   clearTimeout(copyTimer);
-  copyBtn.innerHTML = COPY_BTN_HTML;
+  setCopyState(false);
 }
 
 function handleClear() {
   inputText.value = '';
   resultText.textContent = '';
-  resultSection.style.display = 'none';
-  originalWords.textContent = '0 words';
-  humanizedWords.textContent = '0 words';
-  wordCount.textContent = '0 words';
+  resultText.style.display = 'none';
+  emptyState.style.display = 'flex';
+  copyBtn.style.display = 'none';
+  resultMeta.textContent = 'Waiting for text';
+  inputMeta.textContent = '0 words';
   lastInputScore = null;
   renderScore(inputScoreBox, '', null);
   renderScore(outputScoreBox, '', null);
@@ -276,7 +293,7 @@ function handleClear() {
 async function handleCopy() {
   try {
     await navigator.clipboard.writeText(resultText.textContent);
-    copyBtn.innerHTML = COPIED_BTN_HTML;
+    setCopyState(true);
     clearTimeout(copyTimer);
     copyTimer = setTimeout(resetCopyButton, 2000);
   } catch (err) {
@@ -289,14 +306,37 @@ humanizeBtn.addEventListener('click', handleHumanize);
 clearBtn.addEventListener('click', handleClear);
 copyBtn.addEventListener('click', handleCopy);
 
+// Fullscreen toggle (the click handler is required by browser security rules).
+function syncFullscreenButton() {
+  const active = Boolean(document.fullscreenElement);
+  fullscreenBtn.innerHTML = icon(active ? 'minimize' : 'maximize');
+  fullscreenBtn.setAttribute('aria-label', active ? 'Exit full screen' : 'Enter full screen');
+  fullscreenBtn.title = active ? 'Exit full screen' : 'Enter full screen';
+}
+
+fullscreenBtn.addEventListener('click', async () => {
+  try {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  } catch (err) {
+    // Some browsers and embedded webviews block the Fullscreen API.
+    console.warn('Fullscreen unavailable:', err);
+  }
+});
+
+document.addEventListener('fullscreenchange', syncFullscreenButton);
+
 // Live word count + AI-likelihood meter on the input (debounced so typing stays smooth).
 let scoreTimer = null;
 inputText.addEventListener('input', () => {
-  wordCount.textContent = wordsLabel(countWords(inputText.value));
+  inputMeta.textContent = wordsLabel(countWords(inputText.value));
   clearTimeout(scoreTimer);
   scoreTimer = setTimeout(() => {
     const text = inputText.value;
     lastInputScore = text.trim() ? analyzeText(text) : null;
-    renderScore(inputScoreBox, 'Input AI likelihood', lastInputScore);
+    renderScore(inputScoreBox, 'AI likelihood', lastInputScore);
   }, 250);
 });

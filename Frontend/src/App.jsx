@@ -5,15 +5,12 @@ import { analyzeText } from './detector';
 import './App.css';
 
 // Set VITE_API_URL to your deployed backend URL (e.g. https://humanize-ai.onrender.com)
-// to use the server. When unset, local dev (localhost) auto-tries
-// http://localhost:5000 first and falls back to in-browser humanization,
-// while any other host (e.g. GitHub Pages) humanizes locally in-browser.
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  (typeof window !== 'undefined' &&
-  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? 'http://localhost:5000'
-    : '');
+// to use a separate server. When unset, local development calls the same
+// origin (Vite proxies /api to http://localhost:5000) and any other host
+// (e.g. GitHub Pages) humanizes locally in-browser with no network request.
+const IS_LOCAL = typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const API_URL = import.meta.env.VITE_API_URL || (IS_LOCAL ? window.location.origin : '');
 
 // Lucide line icons, 1.75px stroke, rendered inline so the app works offline.
 const ICON_PATHS = {
@@ -21,12 +18,6 @@ const ICON_PATHS = {
     <>
       <path d="M12 20h9" />
       <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-    </>
-  ),
-  'arrow-down': (
-    <>
-      <path d="M12 5v14" />
-      <path d="m19 12-7 7-7-7" />
     </>
   ),
   'wand-sparkles': (
@@ -104,6 +95,22 @@ const ICON_PATHS = {
       <path d="M3.34 19a10 10 0 1 1 17.32 0" />
     </>
   ),
+  maximize: (
+    <>
+      <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+      <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+      <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+      <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+    </>
+  ),
+  minimize: (
+    <>
+      <path d="M8 3v3a2 2 0 0 1-2 2H3" />
+      <path d="M21 8h-3a2 2 0 0 1-2-2V3" />
+      <path d="M3 16h3a2 2 0 0 1 2 2v3" />
+      <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+    </>
+  ),
 };
 
 function Icon({ name, size = 16, className = '' }) {
@@ -156,7 +163,7 @@ function ScorePanel({ title, analysis, delta }) {
             {drop && (
               <span className="status">
                 <Icon name={delta > 0 ? 'arrow-down-right' : 'arrow-up-right'} size={16} />
-                {Math.abs(delta)} pts {delta > 0 ? 'lower' : 'higher'} than input
+                {Math.abs(delta)} pts {delta > 0 ? 'lower' : 'higher'}
               </span>
             )}
           </div>
@@ -212,13 +219,32 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
-  const [stats, setStats] = useState({ originalWords: 0, humanizedWords: 0 });
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     if (!copied) return undefined;
     const timer = setTimeout(() => setCopied(false), 2000);
     return () => clearTimeout(timer);
   }, [copied]);
+
+  useEffect(() => {
+    const syncFullscreen = () => setIsFullscreen(Boolean(document.fullscreenElement));
+    document.addEventListener('fullscreenchange', syncFullscreen);
+    return () => document.removeEventListener('fullscreenchange', syncFullscreen);
+  }, []);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (err) {
+      // Some browsers and embedded webviews block the Fullscreen API.
+      console.warn('Fullscreen unavailable:', err);
+    }
+  };
 
   const handleHumanize = async () => {
     if (!inputText.trim()) {
@@ -253,10 +279,6 @@ function App() {
       }
 
       setOutputText(humanized);
-      setStats({
-        originalWords: countWords(inputText),
-        humanizedWords: countWords(humanized),
-      });
     } catch (err) {
       setError('Failed to humanize text. Please try again.');
       console.error('Error:', err);
@@ -270,7 +292,6 @@ function App() {
     setOutputText('');
     setError('');
     setCopied(false);
-    setStats({ originalWords: 0, humanizedWords: 0 });
   };
 
   const handleCopy = async () => {
@@ -292,6 +313,7 @@ function App() {
       ? inputScore.score - outputScore.score
       : null;
   const inputWords = countWords(inputText);
+  const outputWords = outputText ? countWords(outputText) : 0;
   const intensityLabel =
     intensity === 'light' ? 'Light' : intensity === 'strong' ? 'Strong' : 'Medium';
 
@@ -305,56 +327,32 @@ function App() {
             </span>
             Humanize AI
           </a>
-          <a className="nav-link" href="#how">
-            How it works
-          </a>
+          <div className="nav-actions">
+            <a className="nav-link" href="#how">
+              How it works
+            </a>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={toggleFullscreen}
+              aria-label={isFullscreen ? 'Exit full screen' : 'Enter full screen'}
+              title={isFullscreen ? 'Exit full screen' : 'Enter full screen'}
+            >
+              <Icon name={isFullscreen ? 'minimize' : 'maximize'} size={16} />
+            </button>
+          </div>
         </div>
       </header>
 
-      <main>
-        <section className="hero shell">
-          <h1>Make AI text sound human.</h1>
-          <p className="hero-sub">
-            Paste AI-generated copy, choose how far to push it, and get natural writing
-            back. A live AI-likelihood score shows exactly what changed.
-          </p>
-          <div className="hero-actions">
-            <a className="btn btn-primary" href="#tool">
-              Humanize my text
-              <Icon name="arrow-down" size={16} />
-            </a>
-            <a className="btn btn-ghost" href="#how">
-              How it works
-            </a>
-          </div>
-        </section>
-
-        <section className="shell tool-shell" id="tool">
-          <div className="surface">
-            <div className="surface-head">
-              <h2>Humanize your text</h2>
-              <p>Paste AI-generated text, pick an intensity, then review the result and its score.</p>
+      <main className="app-main">
+        <section className="workspace-screen" id="tool">
+          <div className="toolbar">
+            <div className="toolbar-copy">
+              <h1>Humanize your text</h1>
+              <p>Paste AI-generated text, choose an intensity, then compare the result side by side.</p>
             </div>
 
-            <div className="tool-section">
-              <div className="field-head">
-                <label className="field-label" htmlFor="input-text">
-                  Your text
-                </label>
-                <span className="field-meta">
-                  {inputWords} {inputWords === 1 ? 'word' : 'words'}
-                </span>
-              </div>
-              <textarea
-                id="input-text"
-                value={inputText}
-                onChange={(event) => setInputText(event.target.value)}
-                placeholder="Paste your AI-generated text here…"
-              />
-              <ScorePanel title="Input AI likelihood" analysis={inputScore} />
-            </div>
-
-            <div className="tool-section controls">
+            <div className="toolbar-actions">
               <div className="control-field">
                 <div className="field-head">
                   <label className="field-label" htmlFor="intensity">
@@ -397,49 +395,77 @@ function App() {
                 </button>
               </div>
             </div>
+          </div>
 
-            {error && (
-              <div className="tool-section">
-                <div className="alert" role="alert">
-                  <Icon name="alert-circle" size={18} />
-                  <span>{error}</span>
+          <div className="workspace">
+            <section className="pane" aria-labelledby="input-heading">
+              <div className="pane-head">
+                <div>
+                  <h2 id="input-heading">Input</h2>
+                  <p className="pane-meta">
+                    {inputWords} {inputWords === 1 ? 'word' : 'words'}
+                  </p>
                 </div>
               </div>
-            )}
 
-            {outputText && (
-              <div className="tool-section">
-                <div className="result-head">
-                  <div>
-                    <h3>Result</h3>
-                    <p className="result-meta">{intensityLabel} intensity</p>
+              <div className="pane-body">
+                <textarea
+                  id="input-text"
+                  value={inputText}
+                  onChange={(event) => setInputText(event.target.value)}
+                  placeholder="Paste your AI-generated text here…"
+                  aria-label="Your text"
+                />
+
+                {error && (
+                  <div className="alert" role="alert">
+                    <Icon name="alert-circle" size={18} />
+                    <span>{error}</span>
                   </div>
+                )}
+
+                <ScorePanel title="AI likelihood" analysis={inputScore} />
+              </div>
+            </section>
+
+            <section className="pane pane-result" aria-labelledby="result-heading">
+              <div className="pane-head">
+                <div>
+                  <h2 id="result-heading">Result</h2>
+                  <p className="pane-meta">
+                    {outputText
+                      ? `${intensityLabel} intensity · ${outputWords} words`
+                      : 'Waiting for text'}
+                  </p>
+                </div>
+                {outputText && (
                   <button type="button" className="btn btn-ghost btn-sm" onClick={handleCopy}>
                     <Icon name={copied ? 'check' : 'copy'} size={16} />
                     {copied ? 'Copied' : 'Copy'}
                   </button>
-                </div>
+                )}
+              </div>
 
-                <div className="result-text">{outputText}</div>
-
-                <div className="stats">
-                  <div>
-                    <span className="stat-label">Original</span>
-                    <span className="stat-value">{stats.originalWords} words</span>
+              <div className="pane-body">
+                {outputText ? (
+                  <div className="result-text">{outputText}</div>
+                ) : (
+                  <div className="empty-state">
+                    <span className="empty-icon">
+                      <Icon name="pen-line" size={18} />
+                    </span>
+                    <p>Your humanized text will appear here.</p>
+                    <span className="empty-hint">Add text on the left, then choose Humanize.</span>
                   </div>
-                  <div>
-                    <span className="stat-label">Humanized</span>
-                    <span className="stat-value">{stats.humanizedWords} words</span>
-                  </div>
-                </div>
+                )}
 
                 <ScorePanel
-                  title="Output AI likelihood"
+                  title="AI likelihood"
                   analysis={outputScore}
                   delta={scoreDelta}
                 />
               </div>
-            )}
+            </section>
           </div>
         </section>
 
