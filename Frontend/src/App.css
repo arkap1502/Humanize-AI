@@ -592,6 +592,8 @@ textarea:focus {
 .result-text {
   flex: 1 1 auto;
   min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
   color: var(--text);
   font-size: 15px;
   line-height: 1.75;
