@@ -1,4 +1,4 @@
-// Static-demo wiring (mirrors Frontend/src/App.js).
+// Static-demo wiring (mirrors Frontend/src/App.jsx).
 // Tries the backend API first (if you ran `npm start` in Backend/),
 // otherwise humanizes locally in the browser — same as the GitHub Pages build.
 import { humanizer } from './humanizer.js';

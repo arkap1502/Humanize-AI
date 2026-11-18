@@ -19,13 +19,13 @@ Humanize Ai/
 │   ├── package.json
 │   └── server.js         # API + serves Frontend/build in production
 ├── Frontend/
+│   ├── index.html        # Vite entry
+│   ├── vite.config.js
 │   ├── package.json
-│   ├── public/
-│   │   └── index.html
 │   └── src/
-│       ├── App.js
+│       ├── App.jsx
 │       ├── App.css
-│       ├── index.js
+│       ├── index.jsx
 │       └── index.css
 ├── render.yaml           # one-service Render deploy
 └── README.md
@@ -41,7 +41,7 @@ of the app in `live-demo/` (same UI, same styles, same humanizer engine):
 live-demo/
 ├── index.html     # same UI as the React app
 ├── styles.css     # same styles (copied from Frontend/src/*.css)
-├── app.js         # same logic as App.js, in plain JavaScript
+├── app.js         # same logic as App.jsx, in plain JavaScript
 └── humanizer.js   # same engine (works fully offline in the browser)
 ```
 
@@ -73,7 +73,7 @@ What the blueprint does:
 | Setting | Value |
 | --- | --- |
 | Runtime | Node (`NODE_VERSION=20.19.0`) |
-| Build command | `npm run deploy:build` (installs `Backend/` + `Frontend/`, then `react-scripts build`) |
+| Build command | `npm run deploy:build` (installs `Backend/` + `Frontend/`, then `vite build`) |
 | Start command | `cd Backend && npm start` |
 | Health check | `/api/health` |
 | Plan | free |
@@ -84,7 +84,7 @@ What the blueprint does:
 - Build command: `npm run deploy:build`
 - Start command: `cd Backend && npm start`
 - Health check path: `/api/health`
-- Environment: `NODE_VERSION` = `20.19.0` (React Scripts 5 needs Node 18+)
+- Environment: `NODE_VERSION` = `20.19.0` (Vite 8 requires Node 20.19+)
 
 ### Notes
 
@@ -99,6 +99,20 @@ What the blueprint does:
   publish directory `Frontend/build` (see the GitHub Pages section below).
 - Environment variables are optional here. `PORT` is provided by Render.
   `FRONTEND_URL` only matters if you host the UI on a different domain.
+
+### Dependency audits
+
+```bash
+cd Backend  && npm audit              # 0 vulnerabilities
+cd Frontend && npm audit --omit=dev   # 0 vulnerabilities (production)
+```
+
+A full `npm ci` in `Frontend/` reports a build-tool advisory for `picomatch`
+(ReDoS), which has no patched release yet (tracked upstream in
+`micromatch/picomatch#194`). It is dev-only: it is not part of the shipped
+bundle and the dev server is not exposed publicly. Vite 6.2.7 would silence
+the warning but carries known dev-server file-read advisories, so staying on
+current Vite is the safer choice.
 
 ## Deployment (GitHub Pages)
 
@@ -124,7 +138,7 @@ One-time setup:
 
 ### Optional: use the live backend instead of local humanization
 1. Deploy `Backend/` to Render/Railway/Fly (start command: `npm start`, it respects `PORT`).
-2. In the GitHub repo, set `REACT_APP_API_URL` in the `deploy.yml` build env
+2. In the GitHub repo, set `VITE_API_URL` in the `deploy.yml` build env
    (or a `BACKEND_URL` secret) to your backend URL, e.g.
    `https://humanize-ai.onrender.com`.
 3. Local development still uses `http://localhost:5000` — create

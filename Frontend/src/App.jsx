@@ -4,12 +4,12 @@ import { humanizer } from './humanizer';
 import { analyzeText } from './detector';
 import './App.css';
 
-// Set REACT_APP_API_URL to your deployed backend URL (e.g. https://humanize-ai.onrender.com)
+// Set VITE_API_URL to your deployed backend URL (e.g. https://humanize-ai.onrender.com)
 // to use the server. When unset, local dev (localhost) auto-tries
 // http://localhost:5000 first and falls back to in-browser humanization,
 // while any other host (e.g. GitHub Pages) humanizes locally in-browser.
 const API_URL =
-  process.env.REACT_APP_API_URL ||
+  import.meta.env.VITE_API_URL ||
   (typeof window !== 'undefined' &&
   (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? 'http://localhost:5000'

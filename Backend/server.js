@@ -3,7 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 const { humanizer } = require('./humanizer');
 const { analyzeText } = require('./detector');
 
@@ -113,8 +113,12 @@ if (hasFrontendBuild) {
   app.use(express.static(FRONTEND_BUILD, { index: false, maxAge: '1h' }));
 
   // Client-side routing: any non-API GET returns index.html.
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(FRONTEND_BUILD, 'index.html'));
+  // Express 5 no longer accepts a bare "*" path pattern here.
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      return next();
+    }
+    return res.sendFile(path.join(FRONTEND_BUILD, 'index.html'));
   });
 }
 

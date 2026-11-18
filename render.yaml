@@ -16,13 +16,6 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20.19.0
-      # Render sets CI=true for builds, which makes React Scripts treat lint
-      # warnings as errors. Keep builds resilient.
-      - key: CI
-        value: "false"
-      # Smaller build output + lower memory use on the free plan.
-      - key: GENERATE_SOURCEMAP
-        value: "false"
       # Optional: only needed if you host the UI somewhere else.
       # - key: FRONTEND_URL
       #   value: https://your-frontend-domain.com

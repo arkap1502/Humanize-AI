@@ -27,19 +27,18 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build
         run: npm run build
         env:
           # Leave empty for fully-static Pages hosting (in-browser humanizer).
           # To use your deployed backend instead, set this as a repo secret/variable:
-          # REACT_APP_API_URL: ${{ secrets.BACKEND_URL }}
-          REACT_APP_API_URL: ''
-          CI: false
+          # VITE_API_URL: ${{ secrets.BACKEND_URL }}
+          VITE_API_URL: ''
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
